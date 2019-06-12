@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardElevation="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <ImageView
+            android:id="@+id/iv_recipe_thumb"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_recipe_item_servings"
+            android:background="@color/colorPrimaryDark" />
+
+
+        <TextView
+            android:id="@+id/tv_recipe_item_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="01" />
+
+        <TextView
+            android:id="@+id/tv_recipe_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_recipe_item_id"
+            android:layout_margin="@dimen/text_margin"
+
+            android:layout_toLeftOf="@id/iv_recipe_thumb"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Apple Pie"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <TextView
+            android:id="@+id/tv_recipe_item_servings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/text_margin"
+            android:text="Serves 8" />
+
+        <TextView
+            android:id="@+id/tv_recipe_item_stepCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_recipe_item_name"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/text_margin"
+            android:text="12 Steps"
+            android:textAlignment="center" />
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
