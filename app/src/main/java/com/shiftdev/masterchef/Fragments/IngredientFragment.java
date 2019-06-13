@@ -14,8 +14,7 @@ import android.view.ViewGroup;
 
 import com.shiftdev.masterchef.IngredientAdapter;
 import com.shiftdev.masterchef.R;
-import com.shiftdev.masterchef.Fragments.dummy.DummyContent;
-import com.shiftdev.masterchef.Fragments.dummy.DummyContent.DummyItem;
+
 
 /**
  * A fragment representing a list of Items.
@@ -63,16 +62,7 @@ public class IngredientFragment extends Fragment {
           View view = inflater.inflate(R.layout.fragment_ingredient_list_item, container, false);
 
           // Set the adapter
-          if (view instanceof RecyclerView) {
-               Context context = view.getContext();
-               RecyclerView recyclerView = (RecyclerView) view;
-               if (mColumnCount <= 1) {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
-               } else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-               }
-               recyclerView.setAdapter(new IngredientAdapter(DummyContent.ITEMS, mListener));
-          }
+
           return view;
      }
 
@@ -106,6 +96,6 @@ public class IngredientFragment extends Fragment {
       */
      public interface OnListFragmentInteractionListener {
           // TODO: Update argument type and name
-          void onListFragmentInteraction(DummyItem item);
+//        void onListFragmentInteraction(DummyItem item);
      }
 }
