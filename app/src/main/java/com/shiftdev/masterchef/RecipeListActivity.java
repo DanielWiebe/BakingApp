@@ -3,7 +3,6 @@ package com.shiftdev.masterchef;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,7 +11,6 @@ import com.shiftdev.masterchef.Fragments.RecipeListFragment;
 import com.shiftdev.masterchef.Models.Ingredient;
 import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.Models.Step;
-import com.shiftdev.masterchef.RetrofitUtils.JsonPlaceHolderAPI;
 
 import org.parceler.Parcels;
 
@@ -21,11 +19,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 
@@ -60,11 +53,9 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListF
           if (savedInstanceState == null) {
                Timber.d("make new fragment in the container");
                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                       ft.add(R.id.recipe_list_container, rlFrag).commit();
+               ft.add(R.id.recipe_list_container, rlFrag).commit();
           }
      }
-
-
 
 
      @Override

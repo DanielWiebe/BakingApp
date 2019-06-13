@@ -135,7 +135,6 @@ public class RecipeDetailFragment extends Fragment implements RecipeListFragment
           mRecipeDetailAdapter.setStepData(steps, getContext());
 
 
-
           return rootView;
      }
 
