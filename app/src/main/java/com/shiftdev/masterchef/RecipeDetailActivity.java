@@ -8,20 +8,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.shiftdev.masterchef.Fragments.RecipeDetailFragment;
 import com.shiftdev.masterchef.Models.Ingredient;
 import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.Models.Step;
-import com.shiftdev.masterchef.Fragments.RecipeDetailFragment;
-import com.shiftdev.masterchef.R;
-import com.shiftdev.masterchef.RecipeClickListener;
-import com.shiftdev.masterchef.RecipeListActivity;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,15 +28,16 @@ import butterknife.ButterKnife;
  */
 public class RecipeDetailActivity extends AppCompatActivity implements RecipeClickListener {
 
-     static String ALL_RECIPES="All_Recipes";
-     static String SELECTED_RECIPES="Selected_Recipes";
-     static String SELECTED_STEPS="Selected_Steps";
-     static String SELECTED_INDEX="Selected_Index";
-     static String STACK_RECIPE_DETAIL="STACK_RECIPE_DETAIL";
-     static String STACK_RECIPE_STEP_DETAIL="STACK_RECIPE_STEP_DETAIL";
+     static String ALL_RECIPES = "All_Recipes";
+     static String SELECTED_RECIPES = "Selected_Recipes";
+     static String SELECTED_STEPS = "Selected_Steps";
+     static String SELECTED_INDEX = "Selected_Index";
+     static String STACK_RECIPE_DETAIL = "STACK_RECIPE_DETAIL";
+     static String STACK_RECIPE_STEP_DETAIL = "STACK_RECIPE_STEP_DETAIL";
      List<Ingredient> ingredientList = new ArrayList<>();
      List<Step> stepList = new ArrayList<>();
      Recipe theRecipe;
+
      @Override
      protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
@@ -48,29 +45,23 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeCli
           ButterKnife.bind(this);
 
           if (savedInstanceState == null) {
-               Bundle arguments = getIntent().getExtras();
+               //Bundle arguments = getIntent().getExtra("selected_Recipe");
 
-               theRecipe = Parcels.unwrap(getIntent().getParcelableExtra("RecipeListActivity_recipe"));
+               theRecipe = Parcels.unwrap(getIntent().getParcelableExtra("selected_Recipe"));
                setTitle(theRecipe.getName());
 
 
-               final RecipeDetailFragment fragment = new RecipeDetailFragment();
-               fragment.setArguments(arguments);
+               RecipeDetailFragment fragment = new RecipeDetailFragment().newInstance(theRecipe);
                FragmentManager fragmentManager = getSupportFragmentManager();
                fragmentManager.beginTransaction()
-                       .replace(R.id.recipe_detail, fragment).addToBackStack(STACK_RECIPE_DETAIL)
+                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_DETAIL)
                        .commit();
 
-               if(findViewById(R.id.landscape_recipe_list_container).getTag()!= null && findViewById(R.id.landscape_recipe_list_container).getTag().equals("landscape_recipe_list_layout")){
-                    final RecipeDetailFragment fragment2 = new RecipeDetailFragment();
-                    fragment2.setArguments(arguments);
-                    fragmentManager.beginTransaction();
-                         //   .replace(R.id.recipe_detail_container2, fragment2).addToBackStack("DETAIL_RECIPE_STEP_STACK").commit();
-
-               }
-
-
-
+//               if(findViewById(R.id.landscape_recipe_list_container).getTag()!= null && findViewById(R.id.landscape_recipe_list_container).getTag().equals("landscape_recipe_list_layout")){
+//                    final RecipeDetailFragment fragment2 = new RecipeDetailFragment();
+//                    fragment2.setArguments(arguments);
+//                    fragmentManager.beginTransaction();
+//                         //   .replace(R.id.recipe_detail_container2, fragment2).addToBackStack("DETAIL_RECIPE_STEP_STACK").commit();
 
 
           }

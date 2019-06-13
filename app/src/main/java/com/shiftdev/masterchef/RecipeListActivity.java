@@ -62,9 +62,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListF
                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                        ft.add(R.id.recipe_list_container, rlFrag).commit();
           }
-
-          // new fetchRecipeData().execute("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json");
-
      }
 
 
@@ -89,35 +86,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListF
           super.onDestroy();
           unbinder.unbind();
      }
-
-
-//     public class fetchRecipeData extends AsyncTask<String, Void, List<Recipe>> {
-//
-//          @Override
-//          protected void onPostExecute(List<Recipe> recipeList) {
-//               Timber.d("fetchRecipeData onPostExecute");
-//               super.onPostExecute(recipeList);
-//
-//               rAdapter = new RecipeAdapter(RecipeListActivity.this);
-//
-////               recyclerView.setAdapter(rAdapter);
-//          }
-//
-//          @Override
-//          protected List<Recipe> doInBackground(String... strings) {
-//               Timber.d("doInBackground");
-//               URL recipeRequestUrl = NetworkUtils.buildUrl(strings[0]);
-//               try {
-//                    String responseFromHttpUrl = NetworkUtils.getResponseFromHttpUrl(recipeRequestUrl);
-//                    // return NetworkUtils.parseResponseData(responseFromHttpUrl, recipeList);
-//               } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Timber.w("Exception in async task");
-//               }
-//
-//               return null;
-//          }
-//     }
 
      public interface DataLoadedListener {
           public void onDataLoaded(ArrayList<String> data);

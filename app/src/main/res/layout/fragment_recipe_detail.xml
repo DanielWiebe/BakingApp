@@ -4,7 +4,7 @@
     android:id="@+id/recipe_detail"
     style="?android:attr/textAppearanceLarge"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:padding="16dp"
@@ -12,23 +12,22 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="150dp">
 
-        <include
+        <TextView
+            android:id="@+id/tv_recipe_detail_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout="@layout/detail_ingredient_list" />
+            android:layout_height="150dp" />
     </ScrollView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_margin="8dp"
         android:background="@color/colorPrimaryDark" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_detail_recipe_steps"
+        android:id="@+id/rv_recipe_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/step_list" />
-
+        android:layout_height="wrap_content" />
 </LinearLayout>

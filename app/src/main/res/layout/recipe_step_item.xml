@@ -12,19 +12,27 @@
         android:layout_margin="5dp">
 
         <LinearLayout
-            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <TextView
-                android:id="@+id/tv_step_item_name"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_step_item_number"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apple Pie" />
+                android:layout_margin="8dp"
+                android:text="1" />
 
             <TextView
                 android:id="@+id/tv_step_item_short_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Apple Pie" />
+
+            <TextView
+                android:id="@+id/tv_step_item_full_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

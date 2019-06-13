@@ -4,17 +4,23 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shiftdev.masterchef.Models.Ingredient;
 import com.shiftdev.masterchef.Models.Recipe;
+import com.shiftdev.masterchef.Models.Step;
 import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeDetailActivity;
+import com.shiftdev.masterchef.RecipeDetailAdapter;
 import com.shiftdev.masterchef.RecipeListActivity;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,7 +33,7 @@ import timber.log.Timber;
  * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
  * on handsets.
  */
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends Fragment implements RecipeListFragment.RecipeListener {
      /**
       * The fragment argument representing the item ID that this fragment
       * represents.
@@ -38,8 +44,9 @@ public class RecipeDetailFragment extends Fragment {
      RecyclerView ingredientsRV;
 
      //OnRecipeClickListener mCallback;
-
-     @BindView(R.id.rv_recipe_detail_step_list)
+     @BindView(R.id.tv_recipe_detail_text)
+     TextView ingredientTV;
+     @BindView(R.id.rv_recipe_detail)
      RecyclerView stepsRV;
      Recipe theRecipe;
      /**
@@ -59,7 +66,7 @@ public class RecipeDetailFragment extends Fragment {
           RecipeDetailFragment fragment = new RecipeDetailFragment();
 
           Bundle arguments = new Bundle();
-          arguments.putParcelable("Selected Recipe", Parcels.wrap(selectedRecipe));
+          arguments.putParcelable("selected_Recipe", Parcels.wrap(selectedRecipe));
           fragment.setArguments(arguments);
           return fragment;
 
@@ -68,8 +75,6 @@ public class RecipeDetailFragment extends Fragment {
      @Override
      public void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
-
-
 
 
 //
@@ -101,20 +106,48 @@ public class RecipeDetailFragment extends Fragment {
           ButterKnife.bind(this, rootView);
 
           try {
-
-
                Bundle bundle = this.getArguments();
                if (bundle != null) {
-                    theRecipe = bundle.getParcelable("recipe");
-                    Timber.i("Try bundle.getparcelable way:" + theRecipe.toString());
-
-                    theRecipe = Parcels.unwrap(getArguments().getParcelable("recipe"));
-                    Timber.i("Try it the unwrap way: " + theRecipe.toString());
+                    //theRecipe = getArguments().getParcelable("selected_Recipe");
+                    //Timber.i("Try bundle.getparcelable way:" + theRecipe.toString());
+                    theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
+                    Timber.i("Try it the unwrap way: %s", theRecipe.toString());
                }
           } catch (Exception e) {
                e.printStackTrace();
-
           }
+
+          ArrayList<Ingredient> ingredients = theRecipe.getIngredient();
+          ArrayList<Step> steps = theRecipe.getStep();
+
+          for (int i = 0; i < ingredients.size(); i++) {
+               ingredientTV.append("\u2022 " + ingredients.get(i).getIngredient() + "\n");
+               ingredientTV.append("\t\t\t Quantity: " + ingredients.get(i).getQuantity() + "\n");
+               ingredientTV.append("\t\t\t Measure: " + ingredients.get(i).getUnit_of_measurement() + "\n\n");
+          }
+
+
+          LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+          stepsRV.setLayoutManager(mLayoutManager);
+
+          RecipeDetailAdapter mRecipeDetailAdapter = new RecipeDetailAdapter((RecipeDetailAdapter.DetailStepItemClickListener) this);
+          stepsRV.setAdapter(mRecipeDetailAdapter);
+          mRecipeDetailAdapter.setStepData(steps, getContext());
+
+
+
           return rootView;
+     }
+
+     @Override
+     public void onRecipeClicked(Recipe recipe) {
+
+     }
+
+     @Override
+     public void onSaveInstanceState(Bundle currentState) {
+          super.onSaveInstanceState(currentState);
+          currentState.putParcelable("selected_Recipe", Parcels.wrap(theRecipe));
+          currentState.putString("Title", theRecipe.getName());
      }
 }

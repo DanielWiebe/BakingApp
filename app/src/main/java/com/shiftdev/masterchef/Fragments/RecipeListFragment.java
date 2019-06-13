@@ -1,20 +1,23 @@
 package com.shiftdev.masterchef.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeAdapter;
+import com.shiftdev.masterchef.RecipeDetailActivity;
 import com.shiftdev.masterchef.RetrofitUtils.JsonPlaceHolderAPI;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -76,10 +79,11 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
           unbinder = ButterKnife.bind(this, view);
           //returns an arraylist to populate the mRecipes variable
           Timber.d("recipe initially is: %s", mRecipes);
+          rAdapter = new RecipeAdapter(context, this::methodForHandlingRecipeClicks);
           getJSONResponse();
           Timber.d("recipe list after jsonresponse Method: %s", mRecipes);
 
-          rAdapter = new RecipeAdapter(context, this::methodForHandlingRecipeClicks);
+
           recyclerView.setAdapter(rAdapter);
           recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
           //disabled for now because of troubleshooting
@@ -145,23 +149,20 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
      public void methodForHandlingRecipeClicks(Recipe position) {
           Timber.i("Recipe Clicked in the Recipe list with position of %s", position.getId());
 
-          //Bundle selectedRecipeBundle = new Bundle();
+          Bundle selectedRecipeBundle = new Bundle();
           //ArrayList<Recipe> theSelectedRecipe = new ArrayList<>();
 
           RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(position);
           if (mTwoPane) {
                getFragmentManager().beginTransaction().replace(R.id.landscape_recipe_detail_container, fragment).commit();
           } else {
-               FragmentTransaction ft = getFragmentManager().beginTransaction();
-               ft.replace(R.id.recipe_list_container, fragment).addToBackStack(null).commit();
+               //FragmentTransaction ft = getFragmentManager().beginTransaction();
+               //ft.replace(R.id.recipe_list_container, fragment).addToBackStack(null).commit();
 
-
-//               selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));
-//               selectedRecipeBundle.putBoolean("Two Pane", mTwoPane);
-//               final Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
-//               intent.putExtras(selectedRecipeBundle);
-//               startActivity(intent);
-
+               selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));
+               final Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
+               intent.putExtra("selected_Recipe", Parcels.wrap(position));
+               startActivity(intent);
           }
      }
 
