@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context="com.shiftdev.masterchef.RecipeListActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.shiftdev.masterchef.RecipeListActivity">
 
-    <FrameLayout
-        android:id="@+id/recipe_list_container"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_home_recipe_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/recipe_list_item" />
+    <!--<FrameLayout-->
+    <!--android:id="@+id/recipe_list_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+    <!--</FrameLayout>-->
 
-
-</LinearLayout>
+</ScrollView>

@@ -24,21 +24,21 @@ public class Recipe {
 
 
      @SerializedName("id")
-     private int id;
+     public int id;
      @SerializedName("name")
-     private String name;
+     public String name;
 
      @SerializedName("steps")
-     private ArrayList<Step> step;
+     public ArrayList<Step> step;
 
      @SerializedName("ingredients")
-     private ArrayList<Ingredient> ingredient;
+     public ArrayList<Ingredient> ingredient;
 
      @SerializedName("servings")
-     private int servings;
+     public int servings;
 
      @SerializedName("image")
-     private String imageURL;
+     public String imageURL;
 
      @ParcelConstructor
      public Recipe(int id, int servings, String name, ArrayList<Step> steps, ArrayList<Ingredient> ingredients) {

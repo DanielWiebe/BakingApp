@@ -15,7 +15,6 @@ import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeAdapter;
 import com.shiftdev.masterchef.RecipeDetailActivity;
-import com.shiftdev.masterchef.RetrofitUtils.JsonPlaceHolderAPI;
 
 import org.parceler.Parcels;
 
@@ -23,11 +22,6 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class RecipeListFragment extends Fragment implements RecipeAdapter.listenerForRecipeClicks {
@@ -79,8 +73,7 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
           unbinder = ButterKnife.bind(this, view);
           //returns an arraylist to populate the mRecipes variable
           Timber.d("recipe initially is: %s", mRecipes);
-          rAdapter = new RecipeAdapter(context, this::methodForHandlingRecipeClicks);
-          getJSONResponse();
+          //rAdapter = new RecipeAdapter(context, this::methodForHandlingRecipeClicks);
           Timber.d("recipe list after jsonresponse Method: %s", mRecipes);
 
 
@@ -96,53 +89,6 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
 //          }
      }
 
-     //retrofit call and returns array list of recipes to use in the adapter and displayed in the fragment
-     public void getJSONResponse() {
-          JsonPlaceHolderAPI jsonPlaceHolderAPI = getJsonPlaceHolderAPI();
-          Call<ArrayList<Recipe>> call = jsonPlaceHolderAPI.getRecipeObjects();
-
-
-          call.enqueue(new Callback<ArrayList<Recipe>>() {
-               @Override
-               public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
-                    //mRecipes.clear();
-                    if (!response.isSuccessful()) {
-                         Timber.w("Code " + response.code());
-                         return;
-                    } else {
-
-                         try {
-
-                              mRecipes = response.body();
-                              Timber.d("onresponse get the response from JSON: %s", mRecipes.get(0).getId());
-                              rAdapter.setRecipeInfo(response.body(), getContext());
-
-                         } catch (NullPointerException e) {
-                              e.getMessage();
-                         }
-
-                    }
-                    rAdapter.notifyDataSetChanged();
-               }
-
-               @Override
-               public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-                    Timber.w("Failure Retrofit:::: " + call);
-                    t.getMessage();
-               }
-          });
-     }
-
-     //build retrofit object and return the JSONPlaceholderAPI object
-     private JsonPlaceHolderAPI getJsonPlaceHolderAPI() {
-          Timber.d("getJSONPlaceholderAPI method called");
-          Retrofit retrofit = new Retrofit.Builder()
-                  .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
-                  .addConverterFactory(GsonConverterFactory.create())
-                  .build();
-
-          return retrofit.create(JsonPlaceHolderAPI.class);
-     }
 
      //method for satisfying the recipe adapter interface method implementation. used so that I can pass a Parcel recipe object to the detail activity
      @Override

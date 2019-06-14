@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shiftdev.masterchef.Models.Recipe;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,24 +26,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
      final private listenerForRecipeClicks onRecipeClickListener;
      private Context context;
-     private ArrayList<Recipe> recipes;
+     private List<Recipe> recipes;
      private boolean mTwoPane;
-     public RecipeAdapter(Context context, listenerForRecipeClicks listener) {
 
-          this.context = context;
-          this.onRecipeClickListener = listener;
-          //Timber.d("recipes received in the constructor of Recipe Adapter and the first recipe is: %s", recipes.get(0));
-     }
-     public RecipeAdapter(Context context, ArrayList<Recipe> recipeList, listenerForRecipeClicks listener) {
+     public RecipeAdapter(List<Recipe> recipeList, listenerForRecipeClicks listener) {
 
-          this.context = context;
-          this.recipes = recipeList;
+          //this.context = context;
+          recipes = recipeList;
           //  mTwoPane = isLandscape;
           this.onRecipeClickListener = listener;
           //Timber.d("recipes received in the constructor of Recipe Adapter and the first recipe is: %s", recipes.get(0));
      }
 
-     public void setRecipeInfo(ArrayList<Recipe> recipesPassedIn, Context passedContext) {
+     public void setRecipeInfo(List<Recipe> recipesPassedIn, Context passedContext) {
           if (recipes != null) {
                Timber.d("recipes received in the set Recipe info of Recipe Adapter and the first recipe is: %s", recipesPassedIn.get(0));
                context = passedContext;
@@ -52,7 +47,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
           }
      }
 
-//Hi Carlos, thank you for your reply. I'm really glad my fragments are in working order. I had initially tested my adapter with the activity to make sure it was wired up correctly and then implemented the fragments. and ever since, the adapter hasn't functioned at all. none of my adapter Timber logs are called so I wonder if I'm instantiating it/feeding the arraylist of Recipes correctly?
      @NonNull
      @Override
      public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
