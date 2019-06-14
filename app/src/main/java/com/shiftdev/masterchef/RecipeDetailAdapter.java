@@ -21,8 +21,10 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
      ArrayList<Step> stepArrayList;
      String recipeName;
 
-     public RecipeDetailAdapter(DetailStepItemClickListener listener) {
+     public RecipeDetailAdapter(ArrayList<Step> stepsIn, DetailStepItemClickListener listener, String name) {
+          stepArrayList = stepsIn;
           detailStepItemClickListener = listener;
+          recipeName = name;
      }
 
 
@@ -35,18 +37,18 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
      @NonNull
      @Override
      public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-          Context context = parent.getContext();
-          LayoutInflater inflater = LayoutInflater.from(context);
+          LayoutInflater inflater = LayoutInflater.from(parent.getContext());
           View view = inflater.inflate(R.layout.recipe_step_item, parent, false);
 
           return new RecyclerViewHolder(view);
      }
 
      @Override
-     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-          holder.tvNumber.setText(stepArrayList.get(position).getId());
-          holder.tvShortDesc.setText(stepArrayList.get(position).getShortDesc());
-          holder.tvFullDesc.setText(stepArrayList.get(position).getDesc());
+     public void onBindViewHolder(@NonNull RecipeDetailAdapter.RecyclerViewHolder holder, int position) {
+          Step step = stepArrayList.get(position);
+          holder.tvNumber.setText(Integer.toString(step.getId()));
+          holder.tvShortDesc.setText(step.getShortDesc());
+          //holder.tvFullDesc.setText(step.getDesc());
 
      }
 
@@ -66,8 +68,7 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
 
           @BindView(R.id.tv_step_item_number)
           TextView tvNumber;
-          @BindView(R.id.tv_step_item_full_desc)
-          TextView tvFullDesc;
+
 
           public RecyclerViewHolder(View itemView) {
                super(itemView);

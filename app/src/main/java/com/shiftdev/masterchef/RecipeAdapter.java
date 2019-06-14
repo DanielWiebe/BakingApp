@@ -77,7 +77,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                Uri uriLink = Uri.parse(imgLink).buildUpon().build();
                Picasso.get().load(uriLink).into(holder.itemThumb);
 
-          }
+          } else holder.itemThumb.setImageResource(R.mipmap.ic_launcher);
 
 
      }

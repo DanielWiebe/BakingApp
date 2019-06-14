@@ -55,6 +55,7 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
           }
      }
 
+
      @Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
           Timber.d("RecipeListFragment Created");

@@ -1,5 +1,6 @@
 package com.shiftdev.masterchef.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,14 +19,17 @@ import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeDetailActivity;
 import com.shiftdev.masterchef.RecipeDetailAdapter;
 import com.shiftdev.masterchef.RecipeListActivity;
+import com.shiftdev.masterchef.RecipeStepDetailActivity;
 
 import org.parceler.Parcels;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import timber.log.Timber;
 
 /**
@@ -33,26 +38,22 @@ import timber.log.Timber;
  * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
  * on handsets.
  */
-public class RecipeDetailFragment extends Fragment implements RecipeListFragment.RecipeListener {
+public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapter.DetailStepItemClickListener {
      /**
       * The fragment argument representing the item ID that this fragment
       * represents.
       */
      public static final String ARG_ITEM_ID = "item_id";
 
-     @BindView(R.id.rv_recipe_detail_ingredient_list)
-     RecyclerView ingredientsRV;
-
+     Unbinder unbinder;
      //OnRecipeClickListener mCallback;
      @BindView(R.id.tv_recipe_detail_text)
      TextView ingredientTV;
      @BindView(R.id.rv_recipe_detail)
      RecyclerView stepsRV;
      Recipe theRecipe;
-     /**
-      * The dummy content this fragment is presenting.
-      */
-     private List<Recipe> recipes;
+     RecipeDetailAdapter mRecipeDetailAdapter;
+     ArrayList<Step> steps;
 
      /**
       * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,21 +63,16 @@ public class RecipeDetailFragment extends Fragment implements RecipeListFragment
      }
 
      public static RecipeDetailFragment newInstance(Recipe selectedRecipe) {
-
           RecipeDetailFragment fragment = new RecipeDetailFragment();
-
           Bundle arguments = new Bundle();
           arguments.putParcelable("selected_Recipe", Parcels.wrap(selectedRecipe));
           fragment.setArguments(arguments);
           return fragment;
-
      }
 
      @Override
      public void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
-
-
 //
 //          if (getArguments().containsKey(ARG_ITEM_ID)) {
 //               // Load the dummy content specified by the fragment
@@ -95,30 +91,27 @@ public class RecipeDetailFragment extends Fragment implements RecipeListFragment
      @Override
      public void onStart() {
           super.onStart();
-
-
      }
 
      @Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
           View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
-          ButterKnife.bind(this, rootView);
-
+          unbinder = ButterKnife.bind(this, rootView);
           try {
                Bundle bundle = this.getArguments();
                if (bundle != null) {
                     //theRecipe = getArguments().getParcelable("selected_Recipe");
                     //Timber.i("Try bundle.getparcelable way:" + theRecipe.toString());
                     theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
-                    Timber.i("Try it the unwrap way: %s", theRecipe.toString());
+                    Timber.i("Recipe Passed in: %s", theRecipe.toString());
                }
           } catch (Exception e) {
                e.printStackTrace();
           }
 
           ArrayList<Ingredient> ingredients = theRecipe.getIngredient();
-          ArrayList<Step> steps = theRecipe.getStep();
+          steps = theRecipe.getStep();
 
           for (int i = 0; i < ingredients.size(); i++) {
                ingredientTV.append("\u2022 " + ingredients.get(i).getIngredient() + "\n");
@@ -126,27 +119,52 @@ public class RecipeDetailFragment extends Fragment implements RecipeListFragment
                ingredientTV.append("\t\t\t Measure: " + ingredients.get(i).getUnit_of_measurement() + "\n\n");
           }
 
-
           LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
           stepsRV.setLayoutManager(mLayoutManager);
-
-          RecipeDetailAdapter mRecipeDetailAdapter = new RecipeDetailAdapter((RecipeDetailAdapter.DetailStepItemClickListener) this);
+          mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
           stepsRV.setAdapter(mRecipeDetailAdapter);
-          mRecipeDetailAdapter.setStepData(steps, getContext());
-
-
           return rootView;
      }
 
-     @Override
-     public void onRecipeClicked(Recipe recipe) {
-
-     }
 
      @Override
      public void onSaveInstanceState(Bundle currentState) {
           super.onSaveInstanceState(currentState);
           currentState.putParcelable("selected_Recipe", Parcels.wrap(theRecipe));
           currentState.putString("Title", theRecipe.getName());
+     }
+
+
+     //passed in data from the adapter interface about the step that is clicked.
+     @Override
+     public void onAdapterStepItemClick(ArrayList<Step> stepsIn, int clickedItemIndex, String recipeName) {
+          Timber.d("Recipe Clicked %s, name is %s %s", clickedItemIndex, recipeName, stepsIn.get(0));
+          Bundle selectedRecipeBundle = new Bundle();
+
+          selectedRecipeBundle.putParcelable("Steps", Parcels.wrap(steps));
+
+          StepDetailFragment fragment = new StepDetailFragment().newInstance(stepsIn, clickedItemIndex, recipeName);
+          FragmentManager manager = getFragmentManager();
+          manager.beginTransaction()
+                  .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null).commit();
+
+
+//          final Intent intent = new Intent(getActivity(), RecipeStepDetailActivity.class);
+//          intent.putExtra("current_Recipe_Name", recipeName);
+//          intent.putExtra("selected_Step_Index", clickedItemIndex);
+//
+//          startActivity(intent);
+
+
+     }
+
+     @Override
+     public void onDestroyView() {
+          super.onDestroyView();
+          unbinder.unbind();
+     }
+
+     public interface onStepSelected {
+          public void methodForHandlingStepClicksInFragment(Step step);
      }
 }

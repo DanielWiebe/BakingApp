@@ -10,8 +10,15 @@
     android:padding="16dp"
     tools:context=".Fragments.RecipeDetailFragment">
 
+    <TextView
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingredients" />
+
     <ScrollView
         android:layout_width="match_parent"
+        android:background="#DDD"
         android:layout_height="150dp">
 
         <TextView
@@ -26,8 +33,15 @@
         android:layout_margin="8dp"
         android:background="@color/colorPrimaryDark" />
 
+    <TextView
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Instructions" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_recipe_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/recipe_step_item" />
 </LinearLayout>

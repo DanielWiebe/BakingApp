@@ -15,6 +15,7 @@
             android:id="@+id/iv_recipe_thumb"
             android:layout_width="100dp"
             android:layout_height="100dp"
+
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/tv_recipe_item_servings"
             android:background="@color/colorPrimaryDark" />

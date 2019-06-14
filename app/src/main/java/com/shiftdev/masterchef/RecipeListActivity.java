@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shiftdev.masterchef.Fragments.RecipeListFragment;
 import com.shiftdev.masterchef.Models.Ingredient;
 import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.Models.Step;
@@ -30,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 
-public class RecipeListActivity extends AppCompatActivity implements RecipeListFragment.RecipeListener, RecipeAdapter.listenerForRecipeClicks {
+public class RecipeListActivity extends AppCompatActivity implements RecipeAdapter.listenerForRecipeClicks {
      List<Recipe> recipeList;
      List<Ingredient> ingredientList = new ArrayList<>();
      List<Step> stepList = new ArrayList<>();
@@ -67,7 +66,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListF
      }
 
      private void setUpAdapterAndRecycler() {
-          // rAdapter = new RecipeAdapter(context, this::methodForHandlingRecipeClicks);
           recyclerView.setHasFixedSize(true);
           RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
           recyclerView.setLayoutManager(manager);
@@ -128,14 +126,14 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListF
           super.onSaveInstanceState(outState);
      }
 
-     @Override
-     public void onRecipeClicked(Recipe recipe) {
-          Intent intent = new Intent(this, RecipeDetailActivity.class);
-          Bundle bundle = new Bundle();
-          bundle.putParcelable("RecipeListActivity_recipe", Parcels.wrap(recipe));
-          intent.putExtras(bundle);
-          startActivity(intent);
-     }
+//     @Override
+//     public void onRecipeClicked(Recipe recipe) {
+//          Intent intent = new Intent(this, RecipeDetailActivity.class);
+//          Bundle bundle = new Bundle();
+//          bundle.putParcelable("RecipeListActivity_recipe", Parcels.wrap(recipe));
+//          intent.putExtras(bundle);
+//          startActivity(intent);
+     //}
 
      @Override
      public void methodForHandlingRecipeClicks(Recipe position) {

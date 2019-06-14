@@ -6,10 +6,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.shiftdev.masterchef.Models.Step;
 import com.shiftdev.masterchef.R;
+
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,35 +31,21 @@ import com.shiftdev.masterchef.R;
  * create an instance of this fragment.
  */
 public class StepDetailFragment extends Fragment {
-     // TODO: Rename parameter arguments, choose names that match
-     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-     private static final String ARG_PARAM1 = "param1";
-     private static final String ARG_PARAM2 = "param2";
-
-     // TODO: Rename and change types of parameters
-     private String mParam1;
-     private String mParam2;
-
+     Unbinder unbinder;
+     @BindView(R.id.tv_step_detail_name)
+     TextView nameTV;
      private OnFragmentInteractionListener mListener;
 
      public StepDetailFragment() {
           // Required empty public constructor
      }
 
-     /**
-      * Use this factory method to create a new instance of
-      * this fragment using the provided parameters.
-      *
-      * @param param1 Parameter 1.
-      * @param param2 Parameter 2.
-      * @return A new instance of fragment StepDetailFragment.
-      */
-     // TODO: Rename and change types and number of parameters
-     public static StepDetailFragment newInstance(String param1, String param2) {
+     public static StepDetailFragment newInstance(ArrayList<Step> steps, int positionClicked, String currentRecipeName) {
           StepDetailFragment fragment = new StepDetailFragment();
           Bundle args = new Bundle();
-          args.putString(ARG_PARAM1, param1);
-          args.putString(ARG_PARAM2, param2);
+          args.putParcelable("step_List", Parcels.wrap(steps));
+          args.putInt("position_Clicked", positionClicked);
+          args.putString("current_Recipe", currentRecipeName);
           fragment.setArguments(args);
           return fragment;
      }
@@ -56,35 +53,42 @@ public class StepDetailFragment extends Fragment {
      @Override
      public void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
-          if (getArguments() != null) {
-               mParam1 = getArguments().getString(ARG_PARAM1);
-               mParam2 = getArguments().getString(ARG_PARAM2);
-          }
+
+
      }
 
      @Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
           // Inflate the layout for this fragment
-          return inflater.inflate(R.layout.fragment_step_detail, container, false);
+          View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
+
+          unbinder = ButterKnife.bind(this, rootView);
+
+          try {
+               Bundle bundle = this.getArguments();
+               if (bundle != null) {
+                    nameTV.setText("The current Recipe is called ");
+                    nameTV.append((bundle.getString("current_Recipe")));
+
+               }
+          } catch (Exception e) {
+               Timber.w("EMpty Bundle: %s", e.getMessage());
+          }
+          return rootView;
+
      }
 
-     // TODO: Rename method, update argument and hook method into UI event
-     public void onButtonPressed(Uri uri) {
-          if (mListener != null) {
-               mListener.onFragmentInteraction(uri);
-          }
-     }
 
      @Override
      public void onAttach(Context context) {
           super.onAttach(context);
-          if (context instanceof OnFragmentInteractionListener) {
-               mListener = (OnFragmentInteractionListener) context;
-          } else {
-               throw new RuntimeException(context.toString()
-                       + " must implement OnFragmentInteractionListener");
-          }
+//          if (context instanceof OnFragmentInteractionListener) {
+//               mListener = (OnFragmentInteractionListener) context;
+//          } else {
+//               throw new RuntimeException(context.toString()
+//                       + " must implement OnFragmentInteractionListener");
+//          }
      }
 
      @Override

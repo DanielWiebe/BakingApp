@@ -3,13 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.StepDetailFragment">
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/tv_step_detail_name"
-        android:text="@string/hello_blank_fragment" />
+    android:id="@+id/recipe_step_detail_container"
+    tools:context=".RecipeStepDetailActivity">
 
 </FrameLayout>

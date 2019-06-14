@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity implements RecipeClickListener {
+public class RecipeDetailActivity extends AppCompatActivity {
 
      static String ALL_RECIPES = "All_Recipes";
      static String SELECTED_RECIPES = "Selected_Recipes";
@@ -42,7 +42,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeCli
      protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
           setContentView(R.layout.activity_recipe_detail);
-          ButterKnife.bind(this);
+
 
           if (savedInstanceState == null) {
                //Bundle arguments = getIntent().getExtra("selected_Recipe");
@@ -62,8 +62,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeCli
 //                    fragment2.setArguments(arguments);
 //                    fragmentManager.beginTransaction();
 //                         //   .replace(R.id.recipe_detail_container2, fragment2).addToBackStack("DETAIL_RECIPE_STEP_STACK").commit();
-
-
           }
      }
 
@@ -92,12 +90,5 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeCli
      }
 
 
-     public void onRecipeSelected(int position) {
 
-     }
-
-     @Override
-     public void onRecipeClick(int pos) {
-
-     }
 }
