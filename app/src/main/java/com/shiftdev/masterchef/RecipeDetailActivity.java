@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.shiftdev.masterchef.Fragments.RecipeDetailFragment;
+import com.shiftdev.masterchef.Fragments.StepDetailFragment;
 import com.shiftdev.masterchef.Models.Ingredient;
 import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.Models.Step;
@@ -18,22 +19,20 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 /**
  * An activity representing a single Recipe detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
  * in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity implements StepDetailFragment.OnFragmentInteractionListener {
 
-     static String ALL_RECIPES = "All_Recipes";
-     static String SELECTED_RECIPES = "Selected_Recipes";
-     static String SELECTED_STEPS = "Selected_Steps";
-     static String SELECTED_INDEX = "Selected_Index";
-     static String STACK_RECIPE_DETAIL = "STACK_RECIPE_DETAIL";
-     static String STACK_RECIPE_STEP_DETAIL = "STACK_RECIPE_STEP_DETAIL";
+     public static String ALL_RECIPES = "All_Recipes";
+     public static String SELECTED_RECIPES = "Selected_Recipes";
+     public static String SELECTED_STEPS = "Selected_Steps";
+     public static String SELECTED_INDEX = "Selected_Index";
+     public static String STACK_RECIPE_DETAIL = "STACK_RECIPE_DETAIL";
+     public static String STACK_RECIPE_STEP_DETAIL = "STACK_RECIPE_STEP_DETAIL";
      List<Ingredient> ingredientList = new ArrayList<>();
      List<Step> stepList = new ArrayList<>();
      Recipe theRecipe;
@@ -45,9 +44,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
 
           if (savedInstanceState == null) {
-               //Bundle arguments = getIntent().getExtra("selected_Recipe");
+               Bundle arguments = getIntent().getExtras();
 
-               theRecipe = Parcels.unwrap(getIntent().getParcelableExtra("selected_Recipe"));
+               theRecipe = Parcels.unwrap(arguments.getParcelable("selected_Recipe"));
                setTitle(theRecipe.getName());
 
 
@@ -57,11 +56,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
                        .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_DETAIL)
                        .commit();
 
-//               if(findViewById(R.id.landscape_recipe_list_container).getTag()!= null && findViewById(R.id.landscape_recipe_list_container).getTag().equals("landscape_recipe_list_layout")){
+               // if (findViewById(R.id.landscape_recipe_list_container).getTag().equals("landscape_recipe_list_layout")) {
 //                    final RecipeDetailFragment fragment2 = new RecipeDetailFragment();
 //                    fragment2.setArguments(arguments);
-//                    fragmentManager.beginTransaction();
-//                         //   .replace(R.id.recipe_detail_container2, fragment2).addToBackStack("DETAIL_RECIPE_STEP_STACK").commit();
+//                    fragmentManager.beginTransaction()
+//                      .replace(R.id.recipe_fragment_detail_container2, fragment2).addToBackStack("DETAIL_RECIPE_STEP_STACK").commit();
+               //}
           }
      }
 
@@ -90,5 +90,38 @@ public class RecipeDetailActivity extends AppCompatActivity {
      }
 
 
+     @Override
+     public void onFragmentInteraction(List<Step> theSteps, int currentIndex, String theRecipeName) {
 
+
+          final StepDetailFragment fragment = new StepDetailFragment();
+          FragmentManager fragmentManager = getSupportFragmentManager();
+
+          getSupportActionBar().setTitle(theRecipeName);
+
+          Bundle stepBundle = new Bundle();
+          stepBundle.putParcelable(SELECTED_STEPS, Parcels.wrap(theSteps));
+          stepBundle.putInt(SELECTED_INDEX, currentIndex);
+          stepBundle.putString("Title", theRecipeName);
+          fragment.setArguments(stepBundle);
+
+          if (findViewById(R.id.recipe_linear_layout).getTag() != null && findViewById(R.id.recipe_linear_layout).getTag().equals("layout-land")) {
+               fragmentManager.beginTransaction()
+                       .replace(R.id.recipe_fragment_detail_container2, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL)
+                       .commit();
+
+          } else {
+               fragmentManager.beginTransaction()
+                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL)
+                       .commit();
+          }
+
+
+     }
+
+     @Override
+     public void onSaveInstanceState(Bundle outState) {
+          super.onSaveInstanceState(outState);
+          outState.putString("Title", theRecipe.getName());
+     }
 }

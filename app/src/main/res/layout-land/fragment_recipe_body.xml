@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:background="@color/design_default_color_primary"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tag="layout-land"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recipe_fragment_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        tools:listitem="@layout/recipe_list_item" />
+
+
+</FrameLayout>

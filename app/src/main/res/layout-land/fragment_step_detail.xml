@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.StepDetailFragment">
-
+    android:orientation="horizontal"
+    android:padding="0dp">
 
     <TextView
         android:id="@+id/tv_step_detail_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:text="@string/hello_blank_fragment" />
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
+        android:layout_height="match_parent"
+        android:background="@color/design_default_color_primary"
+        android:layout_margin="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="0dp" />
 
+    <TextView
+        android:id="@+id/recipe_step_detail_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/recipe_step_detail_desc"
@@ -35,21 +42,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:visibility="gone"
         android:weightSum="2">
 
         <Button
-            android:text="Previous"
             android:id="@+id/bt_step_prev"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="Previous" />
 
         <Button
-            android:text="Next"
             android:id="@+id/bt_step_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="Next" />
 
     </LinearLayout>
+
+
 </RelativeLayout>

@@ -123,6 +123,10 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           stepsRV.setLayoutManager(mLayoutManager);
           mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
           stepsRV.setAdapter(mRecipeDetailAdapter);
+
+
+          //UpdateBakingService.startBakingService(getContext(),recipeIngredientsForWidgets);
+
           return rootView;
      }
 

@@ -60,5 +60,6 @@ dependencies {
     //Gson
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
+    implementation 'com.google.android.exoplayer:exoplayer:r2.0.4'
 
 }
