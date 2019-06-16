@@ -39,7 +39,6 @@ import com.shiftdev.masterchef.RecipeDetailActivity;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +85,8 @@ public class StepDetailFragment extends Fragment {
           StepDetailFragment fragment = new StepDetailFragment();
           Bundle args = new Bundle();
           args.putParcelable("step_List", Parcels.wrap(steps));
-          args.putInt("position_Clicked", positionClicked);
+          args.putInt(SELECTED_INDEX, positionClicked);
+          Timber.d("passed index is %s", positionClicked);
           args.putString("current_Recipe", currentRecipeName);
           fragment.setArguments(args);
           return fragment;
@@ -118,7 +118,7 @@ public class StepDetailFragment extends Fragment {
                     nameTV.setText("Recipe for ");
                     nameTV.append(currentName);
                     steps = Parcels.unwrap(bundle.getParcelable("step_List"));
-                    selectedIndex = bundle.getInt("position_Clicked");
+                    selectedIndex = bundle.getInt(SELECTED_INDEX);
                }
           } catch (Exception e) {
                Timber.w("EMpty Bundle: %s", e.getMessage());
@@ -127,7 +127,7 @@ public class StepDetailFragment extends Fragment {
 
           simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
-
+          Timber.d("Current index is %s", selectedIndex);
           String videoURL = steps.get(selectedIndex).getVideoURL();
 
           String imgURL = steps.get(selectedIndex).getThumbURL();
@@ -142,6 +142,7 @@ public class StepDetailFragment extends Fragment {
                initializePlayer(Uri.parse(steps.get(selectedIndex).getVideoURL()));
           } else {
                player = null;
+               simpleExoPlayerView.setBackgroundResource(R.drawable.ic_highlight_off);
                simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher));
                simpleExoPlayerView.setLayoutParams(new RelativeLayout.LayoutParams(300, 200));
           }
@@ -185,12 +186,9 @@ public class StepDetailFragment extends Fragment {
           if (player == null) {
                TrackSelection.Factory trackSelection = new AdaptiveVideoTrackSelection.Factory(meter);
                DefaultTrackSelector selector = new DefaultTrackSelector(mainHandle, trackSelection);
-
                LoadControl control = new DefaultLoadControl();
-
                player = ExoPlayerFactory.newSimpleInstance(getContext(), selector, control);
                simpleExoPlayerView.setPlayer(player);
-
                String agent = Util.getUserAgent(getContext(), "Master Chef");
                MediaSource source = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(getContext(), agent), new DefaultExtractorsFactory(), null, null);
                player.prepare(source);
@@ -270,6 +268,6 @@ public class StepDetailFragment extends Fragment {
       * >Communicating with Other Fragments</a> for more information.
       */
      public interface OnFragmentInteractionListener {
-          void onFragmentInteraction(List<Step> theSteps, int currentIndex, String theRecipeName);
+          void onFragmentInteraction(ArrayList<Step> theSteps, int currentIndex, String theRecipeName);
      }
 }

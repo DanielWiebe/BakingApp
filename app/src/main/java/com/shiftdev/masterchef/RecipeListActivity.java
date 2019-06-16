@@ -1,16 +1,18 @@
 package com.shiftdev.masterchef;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingResource;
 
-import com.shiftdev.masterchef.Models.Ingredient;
+import com.shiftdev.masterchef.IdlingResource.BasicIdlingResource;
 import com.shiftdev.masterchef.Models.Recipe;
-import com.shiftdev.masterchef.Models.Step;
 import com.shiftdev.masterchef.RetrofitUtils.JsonPlaceHolderAPI;
 
 import org.parceler.Parcels;
@@ -31,18 +33,23 @@ import timber.log.Timber;
 
 public class RecipeListActivity extends AppCompatActivity implements RecipeAdapter.listenerForRecipeClicks {
      List<Recipe> recipeList;
-     List<Ingredient> ingredientList = new ArrayList<>();
-     List<Step> stepList = new ArrayList<>();
      @BindView(R.id.rv_home_recipe_list)
      RecyclerView recyclerView;
      Unbinder unbinder;
-     Context context;
-     /**
-      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-      * device.
-      */
+
+     @Nullable
+     private BasicIdlingResource mIdlingResource;
      private boolean mTwoPane;
      private RecipeAdapter rAdapter;
+
+     @VisibleForTesting
+     @NonNull
+     public IdlingResource getIdlingResource() {
+          if (mIdlingResource == null) {
+               mIdlingResource = new BasicIdlingResource();
+          }
+          return mIdlingResource;
+     }
 
      @Override
      protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +58,13 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
           Timber.plant(new Timber.DebugTree());
           Timber.d("RecipeListActivity created");
           unbinder = ButterKnife.bind(this);
+          getIdlingResource();
+          if (mIdlingResource != null) {
+               mIdlingResource.setIdleState(false);
+          }
           setUpAdapterAndRecycler();
-//          final RecipeListFragment rlFrag = new RecipeListFragment();
-//
           mTwoPane = findViewById(R.id.landscape_recipe_detail_container) != null;
-
-          Timber.d("landscape is " + mTwoPane);
-//
-//          if (savedInstanceState == null) {
-//               Timber.d("make new fragment in the container");
-//               FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//               ft.add(R.id.recipe_list_container, rlFrag).commit();
-//          }
+          Timber.d("%s%s", getString(R.string.landscape_is), mTwoPane);
      }
 
      private void setUpAdapterAndRecycler() {
@@ -82,7 +84,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
                public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                     //mRecipes.clear();
                     if (!response.isSuccessful()) {
-                         Timber.w("Code " + response.code());
+                         Timber.w("Code %s", response.code());
                          return;
                     } else {
                          try {
@@ -104,7 +106,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
 
                @Override
                public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                    Timber.w("Failure Retrofit:::: " + t.getMessage());
+                    Timber.w("Failure Retrofit:::: %s", t.getMessage());
                     //t.getMessage();
                }
           });
@@ -126,36 +128,15 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
           super.onSaveInstanceState(outState);
      }
 
-//     @Override
-//     public void onRecipeClicked(Recipe recipe) {
-//          Intent intent = new Intent(this, RecipeDetailActivity.class);
-//          Bundle bundle = new Bundle();
-//          bundle.putParcelable("RecipeListActivity_recipe", Parcels.wrap(recipe));
-//          intent.putExtras(bundle);
-//          startActivity(intent);
-     //}
-
      @Override
      public void methodForHandlingRecipeClicks(Recipe position) {
           Timber.i("Recipe Clicked in the Recipe list with id of %s", position.getId());
 
           Bundle selectedRecipeBundle = new Bundle();
-          //ArrayList<Recipe> theSelectedRecipe = new ArrayList<>();
-
-          //RecipeDetailFragment fragment = new RecipeDetailFragment();
-
-          //fragment.newInstance(position);
-          //if (mTwoPane) {
-          // getFragmentManager().beginTransaction().replace(R.id.landscape_recipe_detail_container, fragment).commit();
-          //} else {
-          //FragmentTransaction ft = getFragmentManager().beginTransaction();
-          //ft.replace(R.id.recipe_list_container, fragment).addToBackStack(null).commit();
-
           selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));
           final Intent intent = new Intent(getApplicationContext(), RecipeDetailActivity.class);
           intent.putExtra("selected_Recipe", Parcels.wrap(position));
           startActivity(intent);
-          //}
      }
 
      @Override
@@ -164,7 +145,4 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
           unbinder.unbind();
      }
 
-     public interface DataLoadedListener {
-          public void onDataLoaded(ArrayList<String> data);
-     }
 }

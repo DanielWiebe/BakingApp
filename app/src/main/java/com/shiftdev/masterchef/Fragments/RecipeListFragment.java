@@ -74,20 +74,11 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
           unbinder = ButterKnife.bind(this, view);
           //returns an arraylist to populate the mRecipes variable
           Timber.d("recipe initially is: %s", mRecipes);
-          //rAdapter = new RecipeAdapter(context, this::methodForHandlingRecipeClicks);
           Timber.d("recipe list after jsonresponse Method: %s", mRecipes);
 
 
           recyclerView.setAdapter(rAdapter);
           recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-          //disabled for now because of troubleshooting
-//          if (view.findViewById(R.id.check_view) != null) {
-//               recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-//               Timber.d("set layout manager to grid");
-//          } else {
-//
-//               Timber.d("set layout manager to linear");
-//          }
      }
 
 
@@ -97,15 +88,10 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
           Timber.i("Recipe Clicked in the Recipe list with position of %s", position.getId());
 
           Bundle selectedRecipeBundle = new Bundle();
-          //ArrayList<Recipe> theSelectedRecipe = new ArrayList<>();
-
           RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(position);
           if (mTwoPane) {
                getFragmentManager().beginTransaction().replace(R.id.landscape_recipe_detail_container, fragment).commit();
           } else {
-               //FragmentTransaction ft = getFragmentManager().beginTransaction();
-               //ft.replace(R.id.recipe_list_container, fragment).addToBackStack(null).commit();
-
                selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));
                final Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
                intent.putExtra("selected_Recipe", Parcels.wrap(position));

@@ -11,22 +11,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp">
 
-        <ImageView
-            android:id="@+id/iv_recipe_thumb"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="16dp"
-            android:background="@color/colorPrimaryDark" />
-
 
         <TextView
             android:id="@+id/tv_recipe_item_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="01" />
+            android:text="@string/_01" />
 
         <TextView
             android:id="@+id/tv_recipe_item_name"
@@ -35,10 +26,9 @@
             android:layout_below="@id/tv_recipe_item_id"
             android:layout_margin="@dimen/text_margin"
 
-            android:layout_toLeftOf="@id/iv_recipe_thumb"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Apple Pie"
+            android:text="@string/apple_pie"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -48,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/text_margin"
-            android:text="Serves 8" />
+            android:text="@string/serves_8" />
 
         <TextView
             android:id="@+id/tv_recipe_item_stepCount"
@@ -57,7 +47,7 @@
             android:layout_below="@id/tv_recipe_item_name"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/text_margin"
-            android:text="12 Steps"
+            android:text="@string/_12_steps"
             android:textAlignment="center" />
 
 

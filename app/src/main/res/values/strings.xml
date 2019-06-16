@@ -5,6 +5,22 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_widget">Add widget</string>
-    <string name="appwidget_text">The ingredients will show up once the parent app Master Chef is launched.</string>
+    <string name="landscape_is">landscape is</string>
+    <string name="nutella_pie">Nutella Pie</string>
+    <string name="serves_8_people">Serves 8 people</string>
+    <string name="total_of_12_steps">Total of 12 Steps</string>
+    <string name="recipe_number_01">Recipe Number 01</string>
+    <string name="serves_8">Serves 8</string>
+    <string name="_12_steps">12 Steps</string>
+    <string name="_01">01</string>
+    <string name="_1">1</string>
+    <string name="crushed_margarine_seeds">Crushed margarine seeds</string>
+    <string name="_30">30</string>
+    <string name="tbsp">TBSP</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="instructions">Instructions</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="apple_pie">Apple Pie</string>
+    <string name="recipe_list">Recipe List</string>
 </resources>

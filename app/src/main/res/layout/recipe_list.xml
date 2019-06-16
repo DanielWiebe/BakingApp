@@ -11,15 +11,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recipe List"
+            android:text="@string/recipe_list"
             android:layout_gravity="center_horizontal"
             />
 
-    <FrameLayout
-        android:id="@+id/recipe_list_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/recipe_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+        </FrameLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

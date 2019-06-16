@@ -29,6 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
+import static com.shiftdev.masterchef.RecipeDetailActivity.STACK_RECIPE_STEP_DETAIL;
+
 /**
  * A fragment representing a single Recipe detail screen.
  * This fragment is either contained in a {@link RecipeListActivity}
@@ -70,19 +72,6 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      @Override
      public void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
-//
-//          if (getArguments().containsKey(ARG_ITEM_ID)) {
-//               // Load the dummy content specified by the fragment
-//               // arguments. In a real-world scenario, use a Loader
-//               // to load content from a content  provider.
-//               recipes = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-//
-//               Activity activity = this.getActivity();
-//               CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//               if (appBarLayout != null) {
-//                    appBarLayout.setTitle(recipes.content);
-//               }
-          //}
      }
 
      @Override
@@ -98,33 +87,26 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           try {
                Bundle bundle = this.getArguments();
                if (bundle != null) {
-                    //theRecipe = getArguments().getParcelable("selected_Recipe");
-                    //Timber.i("Try bundle.getparcelable way:" + theRecipe.toString());
                     theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
                     Timber.i("Recipe Passed in: %s", theRecipe.toString());
                }
           } catch (Exception e) {
                e.printStackTrace();
           }
-
           ArrayList<Ingredient> ingredients = theRecipe.getIngredient();
           steps = theRecipe.getStep();
           ArrayList<Ingredient> ingredientsToPassToWidget = new ArrayList<>();
-
           for (int i = 0; i < ingredients.size(); i++) {
                ingredientTV.append("\u2022 " + ingredients.get(i).getIngredient() + "\n");
                ingredientTV.append("\t\t\t Quantity: " + ingredients.get(i).getQuantity() + "\n");
                ingredientTV.append("\t\t\t Measure: " + ingredients.get(i).getUnit_of_measurement() + "\n\n");
                ingredientsToPassToWidget.add(ingredients.get(i));
           }
-
           LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
           stepsRV.setLayoutManager(mLayoutManager);
           mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
           stepsRV.setAdapter(mRecipeDetailAdapter);
-
           WidgetRecipeService.startWidgetService(getContext(), ingredientsToPassToWidget);
-
           return rootView;
      }
 
@@ -136,28 +118,17 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           currentState.putString("Title", theRecipe.getName());
      }
 
-
      //passed in data from the adapter interface about the step that is clicked.
      @Override
      public void onAdapterStepItemClick(ArrayList<Step> stepsIn, int clickedItemIndex, String recipeName) {
           Timber.d("Recipe Clicked %s, name is %s %s", clickedItemIndex, recipeName, stepsIn.get(0));
           Bundle selectedRecipeBundle = new Bundle();
-
+          Timber.d(" clicked index is %s", clickedItemIndex);
           selectedRecipeBundle.putParcelable("Steps", Parcels.wrap(steps));
-
           StepDetailFragment fragment = new StepDetailFragment().newInstance(stepsIn, clickedItemIndex, recipeName);
           FragmentManager manager = getFragmentManager();
           manager.beginTransaction()
-                  .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null).commit();
-
-
-//          final Intent intent = new Intent(getActivity(), RecipeStepDetailActivity.class);
-//          intent.putExtra("current_Recipe_Name", recipeName);
-//          intent.putExtra("selected_Step_Index", clickedItemIndex);
-//
-//          startActivity(intent);
-
-
+                  .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL).commit();
      }
 
      @Override
@@ -165,8 +136,5 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           super.onDestroyView();
           unbinder.unbind();
      }
-
-     public interface onStepSelected {
-          public void methodForHandlingStepClicksInFragment(Step step);
-     }
 }
+

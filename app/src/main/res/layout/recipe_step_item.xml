@@ -16,20 +16,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="1" />
+            android:text="@string/_1" />
 
         <TextView
             android:id="@+id/tv_step_item_short_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Apple Pie" />
+            android:text="@string/apple_pie" />
 
-        <!--<TextView-->
-        <!--android:id="@+id/tv_step_item_full_desc"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:text="Prepare Oven short description" />-->
     </LinearLayout>
 </androidx.cardview.widget.CardView>

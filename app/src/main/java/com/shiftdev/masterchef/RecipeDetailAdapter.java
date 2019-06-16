@@ -1,6 +1,5 @@
 package com.shiftdev.masterchef;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapter.RecyclerViewHolder> {
      final private DetailStepItemClickListener detailStepItemClickListener;
@@ -27,19 +27,11 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
           recipeName = name;
      }
 
-
-     public void setStepData(ArrayList<Step> stepsIn, Context context) {
-          stepArrayList = stepsIn;
-          notifyDataSetChanged();
-     }
-
-
      @NonNull
      @Override
      public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
           LayoutInflater inflater = LayoutInflater.from(parent.getContext());
           View view = inflater.inflate(R.layout.recipe_step_item, parent, false);
-
           return new RecyclerViewHolder(view);
      }
 
@@ -48,7 +40,6 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
           Step step = stepArrayList.get(position);
           holder.tvNumber.setText(Integer.toString(step.getId()));
           holder.tvShortDesc.setText(step.getShortDesc());
-          //holder.tvFullDesc.setText(step.getDesc());
 
      }
 
@@ -80,6 +71,7 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
           public void onClick(View view) {
                int clickedPos = getAdapterPosition();
                detailStepItemClickListener.onAdapterStepItemClick(stepArrayList, clickedPos, recipeName);
+               Timber.d("clicked index is %s", clickedPos);
           }
      }
 }

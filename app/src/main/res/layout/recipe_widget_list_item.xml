@@ -7,20 +7,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Crushed margarine seeds"
+        android:text="@string/crushed_margarine_seeds"
         android:id="@+id/tv_widget_ingredient" />
 
     <TextView
         android:id="@+id/tv_widget_qty"
         android:layout_width="wrap_content"
-        android:text="30"
+        android:text="@string/_30"
         android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_widget_measure"
-        android:text="TBSP" />
+        android:text="@string/tbsp" />
 
 
 </LinearLayout>

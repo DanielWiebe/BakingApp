@@ -1,18 +1,15 @@
 package com.shiftdev.masterchef;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shiftdev.masterchef.Models.Recipe;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -60,26 +57,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      public void onBindViewHolder(@NonNull RecipeAdapter.RecipeViewHolder holder, int position) {
           Timber.d("adapter bindviewholder getting position of the view " + position + ", and setting text from the arraylist object");
           Recipe recipe = recipes.get(position);
-          //Timber.i("recipe step size is "+recipe.getStepsList().size());
-
-
           int id = recipe.getId();
           String iden = String.valueOf(id);
           holder.itemId.setText(iden);
           holder.itemName.setText(recipe.getName());
           holder.itemServing.setText(String.format("Serves %d", recipe.getServings()));
           holder.stepCount.setText(String.format("%d Steps", recipe.getStep().size()));
-
-
-          if (recipe.getImageURL() != "") {
-               String imgLink = recipes.get(position).getImageURL();
-
-               Uri uriLink = Uri.parse(imgLink).buildUpon().build();
-               Picasso.get().load(uriLink).into(holder.itemThumb);
-
-          } else holder.itemThumb.setImageResource(R.mipmap.ic_launcher);
-
-
      }
 
      @Override
@@ -94,8 +77,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
      class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-          @BindView(R.id.iv_recipe_thumb)
-          ImageView itemThumb;
           @BindView(R.id.tv_recipe_item_id)
           TextView itemId;
           @BindView(R.id.tv_recipe_item_name)
@@ -104,22 +85,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
           TextView itemServing;
           @BindView(R.id.tv_recipe_item_stepCount)
           TextView stepCount;
-//          listenerForRecipeClicks recipeClickListener;
 
           public RecipeViewHolder(View itemView) {
 
                super(itemView);
                Timber.d("recipeViewHolder called, assigning the click listener and binding Butterknife views to the itemview");
                ButterKnife.bind(this, itemView);
-
                itemView.setOnClickListener(this);
 
           }
 
           @Override
           public void onClick(View v) {
-               Timber.d("clicked with view id of: " + v.getId());
-
+               Timber.d("clicked with view id of: %s", v.getId());
                int pos = getAdapterPosition();
                if (pos != RecyclerView.NO_POSITION) {
                     onRecipeClickListener.methodForHandlingRecipeClicks(recipes.get(pos));
