@@ -105,16 +105,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepDetai
           stepBundle.putString("Title", theRecipeName);
           fragment.setArguments(stepBundle);
 
-          if (findViewById(R.id.recipe_linear_layout).getTag() != null && findViewById(R.id.recipe_linear_layout).getTag().equals("layout-land")) {
-               fragmentManager.beginTransaction()
-                       .replace(R.id.recipe_fragment_detail_container2, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL)
-                       .commit();
-
-          } else {
-               fragmentManager.beginTransaction()
-                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL)
-                       .commit();
-          }
+          fragmentManager.beginTransaction()
+                  .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL)
+                  .commit();
 
 
      }

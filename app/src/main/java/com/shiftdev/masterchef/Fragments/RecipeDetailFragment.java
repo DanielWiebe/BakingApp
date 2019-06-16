@@ -1,6 +1,5 @@
 package com.shiftdev.masterchef.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +18,11 @@ import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeDetailActivity;
 import com.shiftdev.masterchef.RecipeDetailAdapter;
 import com.shiftdev.masterchef.RecipeListActivity;
-import com.shiftdev.masterchef.RecipeStepDetailActivity;
+import com.shiftdev.masterchef.WidgetRecipeService;
 
 import org.parceler.Parcels;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -112,11 +109,13 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
 
           ArrayList<Ingredient> ingredients = theRecipe.getIngredient();
           steps = theRecipe.getStep();
+          ArrayList<Ingredient> ingredientsToPassToWidget = new ArrayList<>();
 
           for (int i = 0; i < ingredients.size(); i++) {
                ingredientTV.append("\u2022 " + ingredients.get(i).getIngredient() + "\n");
                ingredientTV.append("\t\t\t Quantity: " + ingredients.get(i).getQuantity() + "\n");
                ingredientTV.append("\t\t\t Measure: " + ingredients.get(i).getUnit_of_measurement() + "\n\n");
+               ingredientsToPassToWidget.add(ingredients.get(i));
           }
 
           LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -124,8 +123,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
           stepsRV.setAdapter(mRecipeDetailAdapter);
 
-
-          //UpdateBakingService.startBakingService(getContext(),recipeIngredientsForWidgets);
+          WidgetRecipeService.startWidgetService(getContext(), ingredientsToPassToWidget);
 
           return rootView;
      }

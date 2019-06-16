@@ -13,7 +13,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RecipeStepDetailActivity"></activity>
+        <receiver android:name=".RecipeWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_provider_info" />
+        </receiver>
+
+        <service android:name=".WidgetRecipeService" />
+        <service
+            android:name=".WidgetGridRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
+        <activity android:name=".RecipeStepDetailActivity" />
         <activity
             android:name=".RecipeListActivity"
             android:label="@string/title_recipe_list">
@@ -31,6 +47,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.shiftdev.masterchef.RecipeListActivity" />
         </activity>
+
+
     </application>
 
 </manifest>
