@@ -13,6 +13,42 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+
+        <service android:name=".WidgetRecipeService" />
+        <service
+            android:name=".WidgetGridRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
+        <activity
+            android:name=".RecipeStepDetailActivity"
+            android:label="Recipe Step Details" />
+
+
+        <activity
+
+            android:name=".RecipeListActivity"
+            android:label="@string/title_recipe_list"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+
+        <activity
+            android:name=".RecipeDetailActivity"
+            android:label="@string/title_recipe_detail"
+            android:parentActivityName=".RecipeListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.shiftdev.masterchef.RecipeListActivity" />
+        </activity>
+
         <receiver android:name=".RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -22,31 +58,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_widget_provider_info" />
         </receiver>
-
-        <service android:name=".WidgetRecipeService" />
-        <service
-            android:name=".WidgetGridRemoteViewService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-
-        <activity android:name=".RecipeStepDetailActivity" />
-        <activity
-            android:name=".RecipeListActivity"
-            android:label="@string/title_recipe_list">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".RecipeDetailActivity"
-            android:label="@string/title_recipe_detail"
-            android:parentActivityName=".RecipeListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.shiftdev.masterchef.RecipeListActivity" />
-        </activity>
 
 
     </application>

@@ -25,17 +25,16 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
      static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
+          Intent intent = new Intent(context, RecipeDetailActivity.class);
+          PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
 
 
-          Intent intent = new Intent(context, RecipeDetailActivity.class);
-          intent.addCategory(Intent.ACTION_MAIN);
-          intent.addCategory(Intent.CATEGORY_LAUNCHER);
-          intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-          PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
           views.setPendingIntentTemplate(R.id.gv_parent_for_widget, pendingIntent);
 
           Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
+          views.setOnClickPendingIntent(R.id.gv_parent_for_widget, pendingIntent);
           views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
 
           // Instruct the widget manager to update the widget
@@ -44,13 +43,27 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
      public static void manualUpdateRecipeWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
           for (int appWidgetId : appWidgetIds) {
+//               Intent intent = new Intent(context, RecipeDetailActivity.class);
+//               PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//               RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
+////               intent.addCategory(Intent.ACTION_MAIN);
+////               intent.addCategory(Intent.CATEGORY_LAUNCHER);
+////               intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//
+////               views.setPendingIntentTemplate(R.id.gv_parent_for_widget, pendingIntent);
+//               // Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
+//               views.setOnClickPendingIntent(R.id.gv_parent_for_widget, pendingIntent);
                updateAppWidget(context, appWidgetManager, appWidgetId);
           }
      }
 
      @Override
      public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
+//          for (int appWidgetId : appWidgetIds) {
+//
+//               //views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
+//               updateAppWidget(context, appWidgetManager, appWidgetId);
+//          }
      }
 
      @Override

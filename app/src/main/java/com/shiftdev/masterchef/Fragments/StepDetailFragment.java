@@ -61,6 +61,9 @@ public class StepDetailFragment extends Fragment {
      @BindView(R.id.tv_step_detail_name)
      TextView nameTV;
 
+     @BindView(R.id.tv_step_detail_description)
+     TextView descTV;
+
      @BindView(R.id.playerView)
      SimpleExoPlayerView simpleExoPlayerView;
      SimpleExoPlayer player;
@@ -119,6 +122,9 @@ public class StepDetailFragment extends Fragment {
                     nameTV.append(currentName);
                     steps = Parcels.unwrap(bundle.getParcelable("step_List"));
                     selectedIndex = bundle.getInt(SELECTED_INDEX);
+                    descTV.setText(steps.get(selectedIndex).getDesc());
+
+
                }
           } catch (Exception e) {
                Timber.w("EMpty Bundle: %s", e.getMessage());

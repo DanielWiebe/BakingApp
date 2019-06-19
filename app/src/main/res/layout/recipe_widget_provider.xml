@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:numColumns="1"
         android:padding="8dp"
-        android:verticalSpacing="8dp"
+        android:verticalSpacing="10dp"
         tools:listitem="@layout/recipe_widget_list_item" />
 
 </FrameLayout>

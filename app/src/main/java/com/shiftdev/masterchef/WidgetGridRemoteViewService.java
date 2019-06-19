@@ -1,5 +1,6 @@
 package com.shiftdev.masterchef;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
@@ -16,6 +17,7 @@ import static com.shiftdev.masterchef.RecipeWidgetProvider.ingredients;
 public class WidgetGridRemoteViewService extends RemoteViewsService {
 
      ArrayList<Ingredient> ingredientListForRemoteView;
+     private int appwidgetId;
 
      @Override
      public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -27,6 +29,7 @@ public class WidgetGridRemoteViewService extends RemoteViewsService {
 
           public GridRemoteViewsFactory(Context context, Intent intent) {
                this.context = context;
+               appwidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
           }
 
           @Override
@@ -50,13 +53,10 @@ public class WidgetGridRemoteViewService extends RemoteViewsService {
           }
 
           @Override
-          public RemoteViews getViewAt(int i) {
-               Timber.d("GridRemoteView Service getViewAt passed in ingredient id of %s", i);
-               RemoteViews views = new RemoteViews(getPackageName(), R.layout.recipe_widget_list_item);
-               views.setTextViewText(R.id.tv_widget_ingredient, ingredientListForRemoteView.get(i).getIngredient());
-               views.setTextViewText(R.id.tv_widget_measure, ingredientListForRemoteView.get(i).getUnit_of_measurement());
-
-               views.setTextViewText(R.id.tv_widget_qty, String.valueOf(ingredientListForRemoteView.get(i).getQuantity()));
+          public RemoteViews getViewAt(int position) {
+               Timber.d("GridRemoteView Service getViewAt passed in ingredient id of %s", position);
+               RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_list_item);
+               views.setTextViewText(R.id.tv_widget_ingredient, ingredientListForRemoteView.get(position).getIngredient());
 
                Intent populateIntent = new Intent();
                views.setOnClickFillInIntent(R.id.tv_widget_ingredient, populateIntent);
