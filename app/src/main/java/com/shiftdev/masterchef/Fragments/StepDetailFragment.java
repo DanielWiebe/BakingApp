@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.RequestManager;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -29,6 +30,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -78,6 +80,7 @@ public class StepDetailFragment extends Fragment {
      Button nextBT;
 
      Handler mainHandle;
+     RequestManager requestManager;
      private OnFragmentInteractionListener mListener;
 
      public StepDetailFragment() {
@@ -131,27 +134,7 @@ public class StepDetailFragment extends Fragment {
           }
 
 
-          simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-
-          Timber.d("Current index is %s", selectedIndex);
-          String videoURL = steps.get(selectedIndex).getVideoURL();
-
-          String imgURL = steps.get(selectedIndex).getThumbURL();
-//          if (imgURL != ""){
-//               Uri builtUri = Uri.parse(imgURL).buildUpon().build();
-//
-//          }
-
-
-          if (!videoURL.isEmpty()) {
-
-               initializePlayer(Uri.parse(steps.get(selectedIndex).getVideoURL()));
-          } else {
-               player = null;
-               simpleExoPlayerView.setBackgroundResource(R.drawable.ic_highlight_off);
-               simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher));
-               simpleExoPlayerView.setLayoutParams(new RelativeLayout.LayoutParams(300, 200));
-          }
+          setUpPlayer();
 
 
           previousBT.setOnClickListener(new View.OnClickListener() {
@@ -188,16 +171,47 @@ public class StepDetailFragment extends Fragment {
 
      }
 
+     private void setUpPlayer() {
+          simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+
+          Timber.d("Current index is %s", selectedIndex);
+          String videoURL = steps.get(selectedIndex).getVideoURL();
+
+          String imgURL = steps.get(selectedIndex).getThumbURL();
+//          if (imgURL != ""){
+//               Uri builtUri = Uri.parse(imgURL).buildUpon().build();
+//
+//          }
+
+
+          if (!videoURL.isEmpty()) {
+
+               initializePlayer(Uri.parse(steps.get(selectedIndex).getVideoURL()));
+          } else {
+               player = null;
+               simpleExoPlayerView.setBackgroundResource(R.drawable.ic_highlight_off);
+               simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher));
+               simpleExoPlayerView.setLayoutParams(new RelativeLayout.LayoutParams(300, 200));
+          }
+     }
+
      private void initializePlayer(Uri uri) {
           if (player == null) {
                TrackSelection.Factory trackSelection = new AdaptiveVideoTrackSelection.Factory(meter);
                DefaultTrackSelector selector = new DefaultTrackSelector(mainHandle, trackSelection);
                LoadControl control = new DefaultLoadControl();
+
+
                player = ExoPlayerFactory.newSimpleInstance(getContext(), selector, control);
                simpleExoPlayerView.setPlayer(player);
-               String agent = Util.getUserAgent(getContext(), "Master Chef");
-               MediaSource source = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(getContext(), agent), new DefaultExtractorsFactory(), null, null);
-               player.prepare(source);
+
+
+               DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(), "MasterChef"));
+               MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(steps.get(selectedIndex).getVideoURL()));
+               MediaSource source = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
+
+
+               player.prepare(mediaSource);
                player.setPlayWhenReady(true);
           }
      }
@@ -236,6 +250,13 @@ public class StepDetailFragment extends Fragment {
      }
 
      @Override
+     public void onStart() {
+          super.onStart();
+          setUpPlayer();
+
+     }
+
+     @Override
      public void onDestroyView() {
           super.onDestroyView();
           if (player != null) {
@@ -249,8 +270,10 @@ public class StepDetailFragment extends Fragment {
      public void onStop() {
           super.onStop();
           if (player != null) {
+               simpleExoPlayerView.setPlayer(null);
                player.stop();
                player.release();
+               player = null;
           }
      }
 
