@@ -25,17 +25,24 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
      static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
-          Intent intent = new Intent(context, RecipeDetailActivity.class);
-          PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
+          Intent intent = new Intent(context, RecipeListActivity.class);
+          intent.addCategory(Intent.ACTION_MAIN);
+          intent.addCategory(Intent.CATEGORY_LAUNCHER);
+          intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+          PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
+          views.setPendingIntentTemplate(R.id.gv_parent_for_widget, appPendingIntent);
 
-          views.setPendingIntentTemplate(R.id.gv_parent_for_widget, pendingIntent);
 
           Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
-          views.setOnClickPendingIntent(R.id.gv_parent_for_widget, pendingIntent);
           views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
+
+
+          //why is this the eproblem line???
+          //views.setOnClickPendingIntent(R.id.gv_parent_for_widget, appPendingIntent);
+
 
           // Instruct the widget manager to update the widget
           appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -59,11 +66,9 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
      @Override
      public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-//          for (int appWidgetId : appWidgetIds) {
-//
-//               //views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
-//               updateAppWidget(context, appWidgetManager, appWidgetId);
-//          }
+          for (int appWidgetId : appWidgetIds) {
+               updateAppWidget(context, appWidgetManager, appWidgetId);
+          }
      }
 
      @Override

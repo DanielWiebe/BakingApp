@@ -57,6 +57,9 @@ public class WidgetGridRemoteViewService extends RemoteViewsService {
                Timber.d("GridRemoteView Service getViewAt passed in ingredient id of %s", position);
                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_list_item);
                views.setTextViewText(R.id.tv_widget_ingredient, ingredientListForRemoteView.get(position).getIngredient());
+               views.setTextViewText(R.id.tv_widget_measure, ingredientListForRemoteView.get(position).getUnit_of_measurement());
+
+               views.setTextViewText(R.id.tv_widget_qty, String.valueOf(ingredientListForRemoteView.get(position).getQuantity()));
 
                Intent populateIntent = new Intent();
                views.setOnClickFillInIntent(R.id.tv_widget_ingredient, populateIntent);
