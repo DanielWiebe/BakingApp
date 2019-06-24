@@ -14,6 +14,8 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 import static com.shiftdev.masterchef.WidgetRecipeService.INGREDIENT_LIST_FROM_DETAIL_ACTIVITY;
 
 /**
@@ -26,22 +28,20 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
      static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-          Intent intent = new Intent(context, RecipeListActivity.class);
-          intent.addCategory(Intent.ACTION_MAIN);
-          intent.addCategory(Intent.CATEGORY_LAUNCHER);
-          intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-          PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-          views.setPendingIntentTemplate(R.id.gv_parent_for_widget, appPendingIntent);
+          Intent mainIntent = new Intent(context, RecipeDetailActivity.class);
+          mainIntent.addCategory(Intent.ACTION_MAIN);
+          mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+          mainIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+          PendingIntent mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
+          //views.setOnClickPendingIntent(R.id.gv_parent_for_widget, mainPendingIntent);
 
 
           Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
           views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
 
 
-          //why is this the eproblem line???
-          //views.setOnClickPendingIntent(R.id.gv_parent_for_widget, appPendingIntent);
+          //why is this the problem line???
+
 
 
           // Instruct the widget manager to update the widget
@@ -88,6 +88,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
           String action = intent.getAction();
           if (action.equals("android.appwidget.action.APPWIDGET_UPDATE")) {
+               Timber.d("intent action equals the expected result. manually updating the widget with the ingredients list");
                ingredients = Parcels.unwrap(intent.getParcelableExtra(INGREDIENT_LIST_FROM_DETAIL_ACTIVITY));
                manager.notifyAppWidgetViewDataChanged(ids, R.id.gv_parent_for_widget);
                RecipeWidgetProvider.manualUpdateRecipeWidgets(context, manager, ids);
