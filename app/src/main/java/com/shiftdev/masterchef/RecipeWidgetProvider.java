@@ -40,10 +40,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
           views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
 
 
-          //why is this the problem line???
-
-
-
           // Instruct the widget manager to update the widget
           appWidgetManager.updateAppWidget(appWidgetId, views);
      }
