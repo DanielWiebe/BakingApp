@@ -39,8 +39,8 @@ public class WidgetRecipeService extends IntentService {
      }
 
      private void handleWidgetUpdate(ArrayList<Ingredient> ingredientsListFromActivity) {
-          Intent intent = new Intent("android.appwidget.action.APPWIDGET_UPDATE");
-          intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+          Intent intent = new Intent("android.appwidget.action.APPWIDGET_UPDATE2");
+          intent.setAction("android.appwidget.action.APPWIDGET_UPDATE2");
           intent.putExtra(INGREDIENT_LIST_FROM_DETAIL_ACTIVITY, Parcels.wrap(ingredientsListFromActivity));
           sendBroadcast(intent);
      }

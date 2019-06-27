@@ -28,19 +28,16 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
      static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
           RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-          Intent mainIntent = new Intent(context, RecipeDetailActivity.class);
+          Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
+          views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
+
+          Intent mainIntent = new Intent(context, RecipeListActivity.class);
           mainIntent.addCategory(Intent.ACTION_MAIN);
           mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
           mainIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
           PendingIntent mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
-          //views.setOnClickPendingIntent(R.id.gv_parent_for_widget, mainPendingIntent);
+          views.setOnClickPendingIntent(R.id.gv_parent_for_widget, mainPendingIntent);
 
-
-          Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
-          views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
-
-
-          // Instruct the widget manager to update the widget
           appWidgetManager.updateAppWidget(appWidgetId, views);
      }
 
@@ -56,6 +53,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 ////               views.setPendingIntentTemplate(R.id.gv_parent_for_widget, pendingIntent);
 //               // Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
 //               views.setOnClickPendingIntent(R.id.gv_parent_for_widget, pendingIntent);
+               Timber.w("manual update method called in Provider, passing in Recipe");
                updateAppWidget(context, appWidgetManager, appWidgetId);
           }
      }
@@ -63,7 +61,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
      @Override
      public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
           for (int appWidgetId : appWidgetIds) {
-               updateAppWidget(context, appWidgetManager, appWidgetId);
+               Timber.w("default On update method called in Provider, so not doing anything");
+               //updateAppWidget(context, appWidgetManager, appWidgetId );
           }
      }
 
@@ -79,17 +78,20 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
      @Override
      public void onReceive(Context context, Intent intent) {
+          super.onReceive(context, intent);
           AppWidgetManager manager = AppWidgetManager.getInstance(context);
           int[] ids = manager.getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
+          Timber.w("onReceive Method in Provider called");
 
           String action = intent.getAction();
-          if (action.equals("android.appwidget.action.APPWIDGET_UPDATE")) {
-               Timber.d("intent action equals the expected result. manually updating the widget with the ingredients list");
+          if (action.equals("android.appwidget.action.APPWIDGET_UPDATE2")) {
+               Timber.w("intent action equals the expected result. manually updating the widget with the ingredients list");
                ingredients = Parcels.unwrap(intent.getParcelableExtra(INGREDIENT_LIST_FROM_DETAIL_ACTIVITY));
                manager.notifyAppWidgetViewDataChanged(ids, R.id.gv_parent_for_widget);
                RecipeWidgetProvider.manualUpdateRecipeWidgets(context, manager, ids);
-               super.onReceive(context, intent);
+
           }
+          Timber.w("intent.getaction didn't contain the expected action");
 
      }
 }
