@@ -97,7 +97,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
           @Override
           public void onClick(View v) {
-               Timber.d("clicked with view id of: %s", v.getId());
+               Timber.d("adapter clicked with view id of: %s", v.getId());
                int pos = getAdapterPosition();
                if (pos != RecyclerView.NO_POSITION) {
                     onRecipeClickListener.methodForHandlingRecipeClicks(recipes.get(pos));

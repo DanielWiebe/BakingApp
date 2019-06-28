@@ -49,7 +49,7 @@ public class WidgetGridRemoteViewService extends RemoteViewsService {
 
           @Override
           public int getCount() {
-               return ingredientListForRemoteView != null ? ingredientListForRemoteView.size() : 0;
+               return ingredientListForRemoteView != null ? ingredientListForRemoteView.size() : 1;
           }
 
           @Override
