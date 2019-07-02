@@ -16,19 +16,15 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.RequestManager;
-import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -67,7 +63,7 @@ public class StepDetailFragment extends Fragment {
      TextView descTV;
 
      @BindView(R.id.playerView)
-     SimpleExoPlayerView simpleExoPlayerView;
+     PlayerView simpleExoPlayerView;
      SimpleExoPlayer player;
      ArrayList<Step> steps;
      int selectedIndex;
@@ -80,7 +76,6 @@ public class StepDetailFragment extends Fragment {
      Button nextBT;
 
      Handler mainHandle;
-     RequestManager requestManager;
      private OnFragmentInteractionListener mListener;
 
      public StepDetailFragment() {
@@ -189,26 +184,25 @@ public class StepDetailFragment extends Fragment {
                initializePlayer(Uri.parse(steps.get(selectedIndex).getVideoURL()));
           } else {
                player = null;
-               simpleExoPlayerView.setBackgroundResource(R.drawable.ic_highlight_off);
-               simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher));
+               simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.ic_cancel_black_64dp));
                simpleExoPlayerView.setLayoutParams(new RelativeLayout.LayoutParams(300, 200));
           }
      }
 
      private void initializePlayer(Uri uri) {
           if (player == null) {
-               TrackSelection.Factory trackSelection = new AdaptiveVideoTrackSelection.Factory(meter);
-               DefaultTrackSelector selector = new DefaultTrackSelector(mainHandle, trackSelection);
-               LoadControl control = new DefaultLoadControl();
+               TrackSelection.Factory trackSelection = new AdaptiveTrackSelection.Factory(meter);
+               DefaultTrackSelector selector = new DefaultTrackSelector(trackSelection);
+               //LoadControl control = new DefaultLoadControl();
 
 
-               player = ExoPlayerFactory.newSimpleInstance(getContext(), selector, control);
+               player = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
                simpleExoPlayerView.setPlayer(player);
 
 
                DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(), "MasterChef"));
                MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(steps.get(selectedIndex).getVideoURL()));
-               MediaSource source = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
+               //MediaSource source = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
 
 
                player.prepare(mediaSource);
