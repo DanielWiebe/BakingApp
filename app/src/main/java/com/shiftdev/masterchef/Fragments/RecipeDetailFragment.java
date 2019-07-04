@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +49,8 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      TextView ingredientTV;
      @BindView(R.id.rv_recipe_detail)
      RecyclerView stepsRV;
+     @BindView(R.id.bt_apply_widget)
+     Button setWidgetBT;
      Recipe theRecipe;
      RecipeDetailAdapter mRecipeDetailAdapter;
      ArrayList<Step> steps;
@@ -106,8 +110,15 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           stepsRV.setLayoutManager(mLayoutManager);
           mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
           stepsRV.setAdapter(mRecipeDetailAdapter);
-          WidgetRecipeService.startWidgetService(getContext(), ingredientsToPassToWidget);
+
+          setWidgetBT.setOnClickListener(view -> setWidget(ingredientsToPassToWidget));
+
           return rootView;
+     }
+
+     private void setWidget(ArrayList<Ingredient> ingredientsToPassToWidget) {
+          WidgetRecipeService.startWidgetService(getContext(), ingredientsToPassToWidget);
+          Toast.makeText(getActivity(), "Widget Updated!", Toast.LENGTH_LONG).show();
      }
 
 

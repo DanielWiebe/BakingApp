@@ -15,13 +15,28 @@
         android:layout_weight="2"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Title"
-
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ingredients"
-            android:textAlignment="center" />
+            android:weightSum="3">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:padding="16dp"
+                android:text="@string/ingredients" />
+
+            <Button
+                android:id="@+id/bt_apply_widget"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="#5a5"
+                android:text="@string/send_to_widget" />
+
+        </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
