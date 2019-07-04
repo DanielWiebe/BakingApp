@@ -69,7 +69,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
           viewPager.setAdapter(pagerAdapter);
           viewPager.setCurrentItem(clickedStepIndex);
           tabLayout.setupWithViewPager(viewPager, true);
-//          viewPager.setOffscreenPageLimit(3);
+          viewPager.setOffscreenPageLimit(3);
 //          viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 //               @Override
 //               public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -87,22 +87,8 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
 //               public void onPageScrollStateChanged(int state) {
 //
 //               }
-//
-////               @Override
-////               public void onPageSelected(int position) {
-////                    //Save your previous position here.
-////               }
-////
-////               @Override
-////               public void onPageScrollStateChanged(int state) {
-////
-//
 //          });
 
-          //  StepDetailFragment fragment = new StepDetailFragment().newInstance(passedInStepList, clickedStepIndex, passedInName);
-//          FragmentManager manager = getSupportFragmentManager();
-//          manager.beginTransaction()
-//                  .replace(R.id.recipe_step_detail_container, fragment).addToBackStack(null).commit();
      }
 
      public interface FragmentLifecycle {
