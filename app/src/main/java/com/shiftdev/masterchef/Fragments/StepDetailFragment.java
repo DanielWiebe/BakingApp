@@ -8,14 +8,16 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -32,11 +34,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.shiftdev.masterchef.Models.Step;
 import com.shiftdev.masterchef.R;
-import com.shiftdev.masterchef.RecipeDetailActivity;
+import com.shiftdev.masterchef.RecipeStepDetailActivity;
 
 import org.parceler.Parcels;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,17 +44,10 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_INDEX;
-import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_RECIPES;
+import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_STEPS;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StepDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link StepDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class StepDetailFragment extends Fragment {
+
+public class StepDetailFragment extends Fragment implements RecipeStepDetailActivity.FragmentLifecycle {
      Unbinder unbinder;
      @BindView(R.id.tv_step_detail_name)
      TextView nameTV;
@@ -64,105 +57,77 @@ public class StepDetailFragment extends Fragment {
 
      @BindView(R.id.playerView)
      PlayerView simpleExoPlayerView;
+
      SimpleExoPlayer player;
-     ArrayList<Step> steps;
+     // ArrayList<Step> steps;
+     Step thePassedInStep;
      int selectedIndex;
      BandwidthMeter meter;
      String currentName;
-     @BindView(R.id.bt_step_prev)
-     Button previousBT;
-
-     @BindView(R.id.bt_step_next)
-     Button nextBT;
 
      Handler mainHandle;
-     private OnFragmentInteractionListener mListener;
+     // private OnFragmentInteractionListener mListener;
+     String videoURL;
+     @BindView(R.id.cardview)
+     CardView cardView;
 
      public StepDetailFragment() {
           // Required empty public constructor
      }
 
-     public static StepDetailFragment newInstance(ArrayList<Step> steps, int positionClicked, String currentRecipeName) {
+     public static StepDetailFragment newInstance(Step step) {
           StepDetailFragment fragment = new StepDetailFragment();
-          Bundle args = new Bundle();
-          args.putParcelable("step_List", Parcels.wrap(steps));
-          args.putInt(SELECTED_INDEX, positionClicked);
-          Timber.d("passed index is %s", positionClicked);
-          args.putString("current_Recipe", currentRecipeName);
-          fragment.setArguments(args);
+          if (step != null) {
+
+               Bundle args = new Bundle();
+               args.putParcelable("step", Parcels.wrap(step));
+
+               //args.putInt(SELECTED_INDEX, positionClicked);
+               Timber.d("stepDetailFragment received step ID of %s and putting it into bundle to make the fragment.", step.getId());
+               fragment.setArguments(args);
+          }
           return fragment;
      }
 
      @Override
      public void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
-
-
      }
 
      @Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
+          View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
           // Inflate the layout for this fragment
           mainHandle = new Handler();
           meter = new DefaultBandwidthMeter();
-          View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
 
-          mListener = (RecipeDetailActivity) getActivity();
+
+          //mListener = (RecipeDetailActivity) getActivity();
           unbinder = ButterKnife.bind(this, rootView);
 
           try {
                Bundle bundle = this.getArguments();
                if (bundle != null) {
-
-                    currentName = bundle.getString("current_Recipe");
-                    nameTV.setText("Recipe for ");
-                    nameTV.append(currentName);
-                    steps = Parcels.unwrap(bundle.getParcelable("step_List"));
+                    nameTV.setText("Recipe Steps");
+                    thePassedInStep = Parcels.unwrap(bundle.getParcelable("step"));
                     selectedIndex = bundle.getInt(SELECTED_INDEX);
-                    descTV.setText(steps.get(selectedIndex).getDesc());
+                    descTV.setText(thePassedInStep.getDesc());
 
+                    Timber.d("Bundle is not null so the step is received in the instantiated fragment with id of %s", thePassedInStep.getId());
 
                }
           } catch (Exception e) {
                Timber.w("EMpty Bundle: %s", e.getMessage());
           }
+          return rootView;
+     }
 
-
+     @Override
+     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+          super.onViewCreated(view, savedInstanceState);
           setUpPlayer();
 
-
-          previousBT.setOnClickListener(new View.OnClickListener() {
-               public void onClick(View view) {
-                    if (steps.get(selectedIndex).getId() > 0) {
-                         if (player != null) {
-                              player.stop();
-                         }
-                         mListener.onFragmentInteraction(steps, steps.get(selectedIndex).getId() - 1, currentName);
-                    } else {
-                         Toast.makeText(getActivity(), "You already are in the First step of the recipe", Toast.LENGTH_SHORT).show();
-
-                    }
-
-               }
-          });
-          nextBT.setOnClickListener(new View.OnClickListener() {
-               public void onClick(View view) {
-
-                    int lastIndex = steps.size() - 1;
-                    if (steps.get(selectedIndex).getId() < steps.get(lastIndex).getId()) {
-                         if (player != null) {
-                              player.stop();
-                         }
-                         mListener.onFragmentInteraction(steps, steps.get(selectedIndex).getId() + 1, currentName);
-                    } else {
-                         Toast.makeText(getContext(), "You already are in the Last step of the recipe", Toast.LENGTH_SHORT).show();
-
-                    }
-               }
-          });
-
-          return rootView;
 
      }
 
@@ -170,23 +135,47 @@ public class StepDetailFragment extends Fragment {
           simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
           Timber.d("Current index is %s", selectedIndex);
-          String videoURL = steps.get(selectedIndex).getVideoURL();
 
-          String imgURL = steps.get(selectedIndex).getThumbURL();
-//          if (imgURL != ""){
-//               Uri builtUri = Uri.parse(imgURL).buildUpon().build();
-//
-//          }
+          videoURL = thePassedInStep.getVideoURL();
 
 
           if (!videoURL.isEmpty()) {
-
-               initializePlayer(Uri.parse(steps.get(selectedIndex).getVideoURL()));
+               initializePlayer(Uri.parse(videoURL));
           } else {
                player = null;
-               simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.ic_cancel_black_64dp));
-               simpleExoPlayerView.setLayoutParams(new RelativeLayout.LayoutParams(300, 200));
+               simpleExoPlayerView.setForeground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cancel_black_64dp));
+               simpleExoPlayerView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cancel_black_64dp));
+
           }
+     }
+
+     @Override
+     public void onConfigurationChanged(Configuration newConfig) {
+          super.onConfigurationChanged(newConfig);
+
+
+          // Checking the orientation of the screen
+          if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+               //First Hide other objects (listview or recyclerview), better hide them using Gone.
+               cardView.setVisibility(View.GONE);
+               getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+               params.width = params.MATCH_PARENT;
+               params.height = params.MATCH_PARENT;
+               simpleExoPlayerView.setLayoutParams(params);
+          } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+               //unhide your objects here.
+               cardView.setVisibility(View.VISIBLE);
+
+
+               getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+               params.width = params.MATCH_PARENT;
+               params.height = 600;
+               simpleExoPlayerView.setLayoutParams(params);
+          }
+
      }
 
      private void initializePlayer(Uri uri) {
@@ -194,19 +183,22 @@ public class StepDetailFragment extends Fragment {
                TrackSelection.Factory trackSelection = new AdaptiveTrackSelection.Factory(meter);
                DefaultTrackSelector selector = new DefaultTrackSelector(trackSelection);
                //LoadControl control = new DefaultLoadControl();
-
-
                player = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
                simpleExoPlayerView.setPlayer(player);
-
-
-               DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(), "MasterChef"));
-               MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(steps.get(selectedIndex).getVideoURL()));
+               DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getContext(), "MasterChef"));
+               MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
                //MediaSource source = new ExtractorMediaSource(uri, dataSourceFactory, new DefaultExtractorsFactory(), null, null);
-
-
+               simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+               player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
                player.prepare(mediaSource);
                player.setPlayWhenReady(true);
+          }
+     }
+
+     public void releasePlayer() {
+          if (player != null) {
+               player.release();
+               player = null;
           }
      }
 
@@ -225,13 +217,9 @@ public class StepDetailFragment extends Fragment {
      @Override
      public void onSaveInstanceState(Bundle currentState) {
           super.onSaveInstanceState(currentState);
-          currentState.putParcelable(SELECTED_RECIPES, Parcels.wrap(steps));
+          currentState.putParcelable(SELECTED_STEPS, Parcels.wrap(thePassedInStep));
           currentState.putInt(SELECTED_INDEX, selectedIndex);
           currentState.putString("Title", currentName);
-     }
-
-     public boolean isInLandscapeMode(Context context) {
-          return (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
      }
 
      @Override
@@ -253,44 +241,34 @@ public class StepDetailFragment extends Fragment {
      @Override
      public void onDestroyView() {
           super.onDestroyView();
-          if (player != null) {
-               player.stop();
-               player.release();
-               player = null;
-          }
+
      }
 
      @Override
      public void onStop() {
           super.onStop();
-          if (player != null) {
-               simpleExoPlayerView.setPlayer(null);
-               player.stop();
-               player.release();
-               player = null;
-          }
+          releasePlayer();
      }
 
      @Override
      public void onPause() {
           super.onPause();
+          releasePlayer();
+     }
+
+     @Override
+     public void onResume() {
+          super.onResume();
+          initializePlayer(Uri.parse(videoURL));
+     }
+
+     @Override
+     public void onPauseFragment() {
+          Timber.d("Fragment paused..");
           if (player != null) {
-               player.stop();
-               player.release();
+               player.setPlayWhenReady(false);
+               releasePlayer();
           }
      }
 
-     /**
-      * This interface must be implemented by activities that contain this
-      * fragment to allow an interaction in this fragment to be communicated
-      * to the activity and potentially other fragments contained in that
-      * activity.
-      * <p>
-      * See the Android Training lesson <a href=
-      * "http://developer.android.com/training/basics/fragments/communicating.html"
-      * >Communicating with Other Fragments</a> for more information.
-      */
-     public interface OnFragmentInteractionListener {
-          void onFragmentInteraction(ArrayList<Step> theSteps, int currentIndex, String theRecipeName);
-     }
 }

@@ -1,5 +1,6 @@
 package com.shiftdev.masterchef.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +18,7 @@ import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeDetailActivity;
 import com.shiftdev.masterchef.RecipeDetailAdapter;
 import com.shiftdev.masterchef.RecipeListActivity;
+import com.shiftdev.masterchef.RecipeStepDetailActivity;
 import com.shiftdev.masterchef.WidgetRecipeService;
 
 import org.parceler.Parcels;
@@ -29,7 +30,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
-import static com.shiftdev.masterchef.RecipeDetailActivity.STACK_RECIPE_STEP_DETAIL;
+import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_INDEX;
+import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_STEPS;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -38,11 +40,6 @@ import static com.shiftdev.masterchef.RecipeDetailActivity.STACK_RECIPE_STEP_DET
  * on handsets.
  */
 public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapter.DetailStepItemClickListener {
-     /**
-      * The fragment argument representing the item ID that this fragment
-      * represents.
-      */
-     public static final String ARG_ITEM_ID = "item_id";
 
      Unbinder unbinder;
      //OnRecipeClickListener mCallback;
@@ -82,8 +79,11 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      @Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
+
+
           View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
           unbinder = ButterKnife.bind(this, rootView);
+
           try {
                Bundle bundle = this.getArguments();
                if (bundle != null) {
@@ -120,15 +120,15 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
 
      //passed in data from the adapter interface about the step that is clicked.
      @Override
-     public void onAdapterStepItemClick(ArrayList<Step> stepsIn, int clickedItemIndex, String recipeName) {
-          Timber.d("Recipe Clicked %s, name is %s %s", clickedItemIndex, recipeName, stepsIn.get(0));
-          Bundle selectedRecipeBundle = new Bundle();
-          Timber.d(" clicked index is %s", clickedItemIndex);
-          selectedRecipeBundle.putParcelable("Steps", Parcels.wrap(steps));
-          StepDetailFragment fragment = new StepDetailFragment().newInstance(stepsIn, clickedItemIndex, recipeName);
-          FragmentManager manager = getFragmentManager();
-          manager.beginTransaction()
-                  .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(STACK_RECIPE_STEP_DETAIL).commit();
+     public void onAdapterStepItemClick(ArrayList<Step> theSteps, int currentIndex, String theRecipeName) {
+          Timber.d("onAdapter Item clicked, Recipe Clicked %s, ID of step is %s", theRecipeName, theSteps.get(currentIndex).getId());
+          Bundle stepBundle = new Bundle();
+          stepBundle.putInt(SELECTED_INDEX, currentIndex);
+          final Intent intent = new Intent(getActivity(), RecipeStepDetailActivity.class);
+          intent.putExtra("title", theRecipeName);
+          intent.putExtra(SELECTED_STEPS, Parcels.wrap(theSteps));
+          intent.putExtra("start_index", currentIndex);
+          startActivity(intent);
      }
 
      @Override
@@ -136,5 +136,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           super.onDestroyView();
           unbinder.unbind();
      }
+
+
 }
 

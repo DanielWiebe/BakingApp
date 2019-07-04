@@ -34,7 +34,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
           views.setPendingIntentTemplate(R.id.gv_parent_for_widget, pendingIntent);
 
           Intent intent1 = new Intent(context, WidgetGridRemoteViewService.class);
-          views.setOnClickPendingIntent(R.id.gv_parent_for_widget, pendingIntent);
+          //views.setOnClickPendingIntent(R.id.gv_parent_for_widget, pendingIntent);
           views.setRemoteAdapter(R.id.gv_parent_for_widget, intent1);
 
           // Instruct the widget manager to update the widget

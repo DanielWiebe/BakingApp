@@ -30,7 +30,6 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
      Context context;
      // @BindView(R.id.rv_recipe_fragment_body)
      RecyclerView recyclerView;
-     RecipeListener mListener;
      Unbinder unbinder;
      private boolean mTwoPane;
      private RecipeAdapter rAdapter;
@@ -47,12 +46,6 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
      @Override
      public void onAttach(Context context) {
           super.onAttach(context);
-
-          try {
-               mListener = (RecipeListener) context;
-          } catch (ClassCastException e) {
-               throw new ClassCastException(context.toString() + "needs to implement the click listener");
-          }
      }
 
 
@@ -117,7 +110,5 @@ public class RecipeListFragment extends Fragment implements RecipeAdapter.listen
           super.onActivityCreated(savedInstanceState);
      }
 
-     public interface RecipeListener {
-          void onRecipeClicked(Recipe recipe);
-     }
+
 }

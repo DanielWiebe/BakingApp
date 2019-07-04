@@ -23,7 +23,8 @@
 
         <activity
             android:name=".RecipeStepDetailActivity"
-            android:label="Recipe Step Details" />
+            android:label="Recipe Step Details"
+            android:parentActivityName=".RecipeDetailActivity" />
 
 
         <activity
@@ -43,6 +44,7 @@
         <activity
             android:name=".RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
+            android:launchMode="singleTop"
             android:parentActivityName=".RecipeListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

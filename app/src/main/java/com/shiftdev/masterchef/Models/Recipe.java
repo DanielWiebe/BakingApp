@@ -49,6 +49,9 @@ public class Recipe {
           this.ingredient = ingredients;
      }
 
+     public Recipe() {
+     }
+
      public String getImageURL() {
           return imageURL;
      }

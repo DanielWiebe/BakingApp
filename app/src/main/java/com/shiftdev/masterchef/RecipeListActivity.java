@@ -82,32 +82,25 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
           call.enqueue(new Callback<List<Recipe>>() {
                @Override
                public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                    //mRecipes.clear();
                     if (!response.isSuccessful()) {
                          Timber.w("Code %s", response.code());
                          return;
                     } else {
                          try {
-                              //JSONResponse jsonResponse = response.body();
                               recipeList = response.body();
                               rAdapter = new RecipeAdapter(recipeList, RecipeListActivity.this::methodForHandlingRecipeClicks);
                               recyclerView.setAdapter(rAdapter);
                               Timber.d("onresponse get the response from JSON: %s", recipeList.get(0).getId());
-                              //rAdapter.setRecipeInfo(response.body(), context);
                               rAdapter.notifyDataSetChanged();
                          } catch (NullPointerException e) {
                               Timber.d("NPE:::: %s", e.getMessage());
                          }
-
-
                     }
-
                }
 
                @Override
                public void onFailure(Call<List<Recipe>> call, Throwable t) {
                     Timber.w("Failure Retrofit:::: %s", t.getMessage());
-                    //t.getMessage();
                }
           });
      }
