@@ -25,12 +25,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_recipe_item_id"
             android:layout_margin="@dimen/text_margin"
-
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/apple_pie"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/tv_recipe_item_servings"

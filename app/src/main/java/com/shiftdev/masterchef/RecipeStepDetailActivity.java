@@ -69,29 +69,44 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
           viewPager.setAdapter(pagerAdapter);
           viewPager.setCurrentItem(clickedStepIndex);
           tabLayout.setupWithViewPager(viewPager, true);
-          viewPager.setOffscreenPageLimit(3);
-//          viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//               @Override
-//               public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                    //Stop media here.
-//                    Timber.d("page scrolled and calling onPauseFragment interaction method");
-//                    listener.onPauseFragment();
-//               }
+          viewPager.setOffscreenPageLimit(0);
+          viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+               int currentPosition = 0;
+
+               @Override
+               public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    //Stop media here.
+                    currentPosition = position;
+
+                    Timber.d("page scrolled from %s and calling onPauseFragment interaction method", currentPosition);
+                    //listener.onPauseFragment();
+               }
+
+               @Override
+               public void onPageSelected(int position) {
+
+                    Timber.d("page scrolled to %s", position);
+//                    FragmentLifecycle fragmentToHide = (FragmentLifecycle)pagerAdapter.getItem(currentPosition);
+//                    fragmentToHide.onPauseFragment();
 //
-//               @Override
-//               public void onPageSelected(int position) {
-//
-//               }
-//
-//               @Override
-//               public void onPageScrollStateChanged(int state) {
-//
-//               }
-//          });
+//                    FragmentLifecycle fragmentToShow = (FragmentLifecycle)pagerAdapter.getItem(position);
+//                    fragmentToShow.onResumeFragment();
+               }
+
+               @Override
+               public void onPageScrollStateChanged(int state) {
+
+               }
+
+          });
 
      }
 
      public interface FragmentLifecycle {
+
           void onPauseFragment();
+
+          void onResumeFragment();
+
      }
 }

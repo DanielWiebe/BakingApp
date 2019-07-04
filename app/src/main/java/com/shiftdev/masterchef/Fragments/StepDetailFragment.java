@@ -102,6 +102,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                               Bundle savedInstanceState) {
           View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
           // Inflate the layout for this fragment
+          setRetainInstance(true);
           mainHandle = new Handler();
           meter = new DefaultBandwidthMeter();
 
@@ -112,7 +113,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           try {
                Bundle bundle = this.getArguments();
                if (bundle != null) {
-                    nameTV.setText("Recipe Steps");
+                    nameTV.setText("Step Info");
                     thePassedInStep = Parcels.unwrap(bundle.getParcelable("step"));
                     selectedIndex = bundle.getInt(SELECTED_INDEX);
                     descTV.setText(thePassedInStep.getDesc());
@@ -121,7 +122,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
 
                }
           } catch (Exception e) {
-               Timber.w("EMpty Bundle: %s", e.getMessage());
+               Timber.w("Empty Bundle: %s", e.getMessage());
           }
           return rootView;
      }
@@ -172,7 +173,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                cardView.setVisibility(View.VISIBLE);
 
 
-               getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+               getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
                params.width = params.MATCH_PARENT;
                params.height = 600;
@@ -181,6 +182,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
 
      }
 
+     //make the sources
      private void initializePlayer() {
           Uri uri = Uri.parse(videoURL);
           if (player == null) {
@@ -206,7 +208,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                   createMediaSource(uri);
      }
 
-
+     //release resources
      public void releasePlayer() {
           if (player != null) {
                playbackPosition = player.getCurrentPosition();
@@ -250,8 +252,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      public void onDetach() {
           super.onDetach();
           if (player != null) {
-               player.stop();
-               player.release();
+               releasePlayer();
           }
      }
 
@@ -280,18 +281,18 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      @Override
      public void onStop() {
           super.onStop();
-          if (Util.SDK_INT > 23) {
-               releasePlayer();
-          }
+          //if (Util.SDK_INT > 23) {
+          releasePlayer();
+          // }
      }
 
      @Override
      public void onResume() {
           super.onResume();
           hideSystemUi();
-          if ((Util.SDK_INT <= 23 || player == null)) {
-               initializePlayer();
-          }
+          //if ((Util.SDK_INT <= 23 || player == null)) {
+          initializePlayer();
+          // }
      }
 
      @Override
@@ -301,6 +302,14 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                player.setPlayWhenReady(false);
                releasePlayer();
           }
+     }
+
+     @Override
+     public void onResumeFragment() {
+          if (player == null) {
+               initializePlayer();
+          }
+
      }
 
 }

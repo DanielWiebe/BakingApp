@@ -23,6 +23,7 @@
 
         <activity
             android:name=".RecipeStepDetailActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
             android:label="Recipe Step Details"
             android:parentActivityName=".RecipeDetailActivity" />
 
