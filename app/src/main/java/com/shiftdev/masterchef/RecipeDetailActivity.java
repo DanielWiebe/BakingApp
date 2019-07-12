@@ -12,7 +12,7 @@ import org.parceler.Parcels;
 
 public class RecipeDetailActivity extends AppCompatActivity {
      public static String SELECTED_RECIPES = "Selected_Recipes";
-     public static String SELECTED_STEPS = "Selected_Steps";
+     public static String THE_STEPS = "Selected_Steps";
      public static String SELECTED_INDEX = "Selected_Index";
      public static String STACK_RECIPE_DETAIL = "STACK_RECIPE_DETAIL";
      public static String STACK_RECIPE_STEP_DETAIL = "STACK_RECIPE_STEP_DETAIL";

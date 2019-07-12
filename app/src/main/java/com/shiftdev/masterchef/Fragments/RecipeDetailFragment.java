@@ -33,7 +33,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_INDEX;
-import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_STEPS;
+import static com.shiftdev.masterchef.RecipeDetailActivity.THE_STEPS;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -137,7 +137,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           stepBundle.putInt(SELECTED_INDEX, currentIndex);
           final Intent intent = new Intent(getActivity(), RecipeStepDetailActivity.class);
           intent.putExtra("title", theRecipeName);
-          intent.putExtra(SELECTED_STEPS, Parcels.wrap(theSteps));
+          intent.putExtra(THE_STEPS, Parcels.wrap(theSteps));
           intent.putExtra("start_index", currentIndex);
           startActivity(intent);
      }

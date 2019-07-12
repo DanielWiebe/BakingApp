@@ -44,7 +44,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_INDEX;
-import static com.shiftdev.masterchef.RecipeDetailActivity.SELECTED_STEPS;
+import static com.shiftdev.masterchef.RecipeDetailActivity.THE_STEPS;
 
 
 public class StepDetailFragment extends Fragment implements RecipeStepDetailActivity.FragmentLifecycle {
@@ -193,12 +193,9 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           if (player == null) {
                MediaSource mediaSource = null;
                player = ExoPlayerFactory.newSimpleInstance(
-                       new DefaultRenderersFactory(getActivity()),
+                       new DefaultRenderersFactory(simpleExoPlayerView.getContext()),
                        new DefaultTrackSelector(), new DefaultLoadControl());
                simpleExoPlayerView.setPlayer(player);
-               player.setPlayWhenReady(playWhenReady);
-               player.seekTo(currentWindow, playbackPosition);
-
                if (!videoURL.isEmpty()) {
                     videoSource = Uri.parse(videoURL);
                     mediaSource = buildMediaSource(videoSource);
@@ -209,11 +206,12 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                } else if (thumbnailURL.isEmpty()) {
                     simpleExoPlayerView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.exo_icon_stop));
                }
-
-
-               simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-               player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+               player.setPlayWhenReady(playWhenReady);
                player.prepare(mediaSource, true, false);
+               player.seekTo(currentWindow, playbackPosition);
+               simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+               player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+
                player.setPlayWhenReady(true);
           }
 
@@ -261,7 +259,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      @Override
      public void onSaveInstanceState(Bundle currentState) {
           super.onSaveInstanceState(currentState);
-          currentState.putParcelable(SELECTED_STEPS, Parcels.wrap(thePassedInStep));
+          currentState.putParcelable(THE_STEPS, Parcels.wrap(thePassedInStep));
           currentState.putInt(SELECTED_INDEX, selectedIndex);
           currentState.putString("Title", currentName);
           currentState.putLong("player_pos", playbackPosition);
