@@ -28,20 +28,23 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#5a5"
+            android:padding="8dp"
             android:text="@string/send_to_widget" />
 
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
+        android:fillViewport="true"
         android:background="#DDD">
 
         <TextView
             android:id="@+id/tv_recipe_detail_text"
             android:layout_width="match_parent"
-            android:layout_height="150dp" />
-    </ScrollView>
+            android:layout_height="120dp"
+            android:layout_margin="8dp" />
+    </androidx.core.widget.NestedScrollView>
 
     <View
         android:layout_width="match_parent"

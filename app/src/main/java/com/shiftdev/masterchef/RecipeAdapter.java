@@ -1,6 +1,8 @@
 package com.shiftdev.masterchef;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +55,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
           return new RecipeViewHolder(view);
      }
 
+     @SuppressLint("DefaultLocale")
      @Override
      public void onBindViewHolder(@NonNull RecipeAdapter.RecipeViewHolder holder, int position) {
-          Timber.d("adapter bindviewholder getting position of the view " + position + ", and setting text from the arraylist object");
+          Timber.d("adapter bindviewholder getting position of the view " + position + ", setting text from the object");
           Recipe recipe = recipes.get(position);
           int id = recipe.getId();
           String iden = String.valueOf(id);
@@ -63,6 +66,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
           holder.itemName.setText(recipe.getName());
           holder.itemServing.setText(String.format("Serves %d", recipe.getServings()));
           holder.stepCount.setText(String.format("%d Steps", recipe.getStep().size()));
+
      }
 
      @Override
@@ -77,6 +81,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
      class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+          int row_index = -1;
           @BindView(R.id.tv_recipe_item_id)
           TextView itemId;
           @BindView(R.id.tv_recipe_item_name)
@@ -89,7 +94,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
           public RecipeViewHolder(View itemView) {
 
                super(itemView);
-               Timber.d("recipeViewHolder called, assigning the click listener and binding Butterknife views to the itemview");
+               //Timber.d("recipeViewHolder called, assigning the click listener and binding Butterknife views to the itemview");
                ButterKnife.bind(this, itemView);
                itemView.setOnClickListener(this);
 
@@ -97,11 +102,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
           @Override
           public void onClick(View v) {
-               Timber.d("clicked with view id of: %s", v.getId());
-               int pos = getAdapterPosition();
-               if (pos != RecyclerView.NO_POSITION) {
-                    onRecipeClickListener.methodForHandlingRecipeClicks(recipes.get(pos));
+               int position = getAdapterPosition();
+               Timber.d("clicked with recipe id of: %s", recipes.get(position).getId());
+               if (row_index == position) {
+                    itemName.setTextColor(Color.parseColor("#567845"));
+               } else {
+                    itemName.setTextColor(Color.parseColor("#000000"));
                }
+               onRecipeClickListener.methodForHandlingRecipeClicks(recipes.get(position));
           }
 
      }

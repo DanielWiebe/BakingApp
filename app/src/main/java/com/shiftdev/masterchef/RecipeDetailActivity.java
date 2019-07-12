@@ -26,6 +26,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
           setContentView(R.layout.activity_recipe_detail);
 
           if (savedInstanceState == null) {
+
                Bundle arguments = getIntent().getExtras();
                theRecipe = Parcels.unwrap(arguments.getParcelable("selected_Recipe"));
                name = theRecipe.getName();
@@ -35,6 +36,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
                fragmentManager.beginTransaction()
                        .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null)
                        .commit();
+          } else {
+               name = savedInstanceState.getString("Title");
+               setTitle(name);
+
           }
      }
 

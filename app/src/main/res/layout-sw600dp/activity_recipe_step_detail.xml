@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="100"
+    tools:context=".RecipeStepDetailActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+
+        android:layout_height="0dp"
+        android:layout_weight="70"
+        android:orientation="vertical"
+        android:weightSum="100">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="0dp"
+            android:layout_weight="99"
+            android:background="@color/cardview_dark_background">
+
+            <include layout="@layout/fragment_step_detail" />
+        </androidx.viewpager.widget.ViewPager>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#000"
+            app:tabGravity="fill"
+
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabIndicatorHeight="5dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/recipe_step_detail_step_container"
+        android:layout_width="match_parent"
+
+        android:layout_height="0dp"
+        android:layout_weight="30"
+        android:background="@color/primary_light">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_step_detail"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/recipe_step_item" />
+    </FrameLayout>
+</LinearLayout>

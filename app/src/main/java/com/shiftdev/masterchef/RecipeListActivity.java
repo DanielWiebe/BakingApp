@@ -1,16 +1,21 @@
 package com.shiftdev.masterchef;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.IdlingResource;
 
+import com.shiftdev.masterchef.Fragments.RecipeDetailFragment;
 import com.shiftdev.masterchef.IdlingResource.BasicIdlingResource;
 import com.shiftdev.masterchef.Models.Recipe;
 import com.shiftdev.masterchef.RetrofitUtils.JsonPlaceHolderAPI;
@@ -36,7 +41,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
      @BindView(R.id.rv_home_recipe_list)
      RecyclerView recyclerView;
      Unbinder unbinder;
-
+     /**
+      * if the screen is in landscape mode, true, then replace the recipe_fragment_detail_container frame layout with the {@link com.shiftdev.masterchef.Fragments.RecipeDetailFragment} if not, then call the parent {@link RecipeDetailActivity}
+      **/
+     @Nullable
+     @BindView(R.id.empty_text)
+     TextView emptyTV;
      @Nullable
      private BasicIdlingResource mIdlingResource;
      private boolean mTwoPane;
@@ -57,14 +67,18 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
           setContentView(R.layout.activity_recipe_list);
           Timber.plant(new Timber.DebugTree());
           Timber.d("RecipeListActivity created");
+          if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+               mTwoPane = true;
+          else mTwoPane = false;
+
           unbinder = ButterKnife.bind(this);
           getIdlingResource();
           if (mIdlingResource != null) {
                mIdlingResource.setIdleState(false);
           }
           setUpAdapterAndRecycler();
-          mTwoPane = findViewById(R.id.landscape_recipe_detail_container) != null;
-          Timber.d("%s%s", getString(R.string.landscape_is), mTwoPane);
+
+          Timber.w("%s %s", getString(R.string.landscape_is), mTwoPane);
      }
 
      private void setUpAdapterAndRecycler() {
@@ -90,7 +104,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
                               recipeList = response.body();
                               rAdapter = new RecipeAdapter(recipeList, RecipeListActivity.this::methodForHandlingRecipeClicks);
                               recyclerView.setAdapter(rAdapter);
-                              Timber.d("onresponse get the response from JSON: %s", recipeList.get(0).getId());
                               rAdapter.notifyDataSetChanged();
                          } catch (NullPointerException e) {
                               Timber.d("NPE:::: %s", e.getMessage());
@@ -123,13 +136,25 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
 
      @Override
      public void methodForHandlingRecipeClicks(Recipe position) {
-          Timber.i("Recipe Clicked in the Recipe list with id of %s", position.getId());
 
-          Bundle selectedRecipeBundle = new Bundle();
-          selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));
-          final Intent intent = new Intent(getApplicationContext(), RecipeDetailActivity.class);
-          intent.putExtra("selected_Recipe", Parcels.wrap(position));
-          startActivity(intent);
+
+          if (mTwoPane) {
+               emptyTV.setVisibility(View.GONE);
+               RecipeDetailFragment fragment = new RecipeDetailFragment().newInstance(position);
+               FragmentManager fragmentManager = getSupportFragmentManager();
+               fragmentManager.beginTransaction()
+                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null)
+                       .commit();
+          } else {
+
+               Timber.i("Recipe Clicked in the Recipe list with id of %s", position.getId());
+
+               Bundle selectedRecipeBundle = new Bundle();
+               selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));
+               final Intent intent = new Intent(getApplicationContext(), RecipeDetailActivity.class);
+               intent.putExtra("selected_Recipe", Parcels.wrap(position));
+               startActivity(intent);
+          }
      }
 
      @Override

@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 import static com.shiftdev.masterchef.RecipeWidgetProvider.ingredients;
+import static com.shiftdev.masterchef.RecipeWidgetProvider.recipeName;
 
 public class WidgetGridRemoteViewService extends RemoteViewsService {
 
      ArrayList<Ingredient> ingredientListForRemoteView;
+     String name;
      private int appwidgetId;
 
      @Override
@@ -30,16 +32,22 @@ public class WidgetGridRemoteViewService extends RemoteViewsService {
           public GridRemoteViewsFactory(Context context, Intent intent) {
                this.context = context;
                appwidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+               name = intent.getStringExtra("name");
+               Timber.w("%s grid remoteviews factory received as the name of recipe", name);
           }
 
           @Override
           public void onCreate() {
+               Timber.w("%s grid remote view service received name", name);
+               RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
+               views.setTextViewText(R.id.tv_widget_recipe_name, name);
 
           }
 
           @Override
           public void onDataSetChanged() {
                ingredientListForRemoteView = ingredients;
+               name = recipeName;
           }
 
           @Override
@@ -58,8 +66,9 @@ public class WidgetGridRemoteViewService extends RemoteViewsService {
                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_list_item);
                views.setTextViewText(R.id.tv_widget_ingredient, ingredientListForRemoteView.get(position).getIngredient());
 
+
                Intent populateIntent = new Intent();
-               views.setOnClickFillInIntent(R.id.tv_widget_ingredient, populateIntent);
+               views.setOnClickFillInIntent(R.id.gv_parent_for_widget, populateIntent);
                return views;
           }
 

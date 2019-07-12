@@ -92,7 +92,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
                Bundle bundle = this.getArguments();
                if (bundle != null) {
                     theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
-                    Timber.i("Recipe Passed in: %s", theRecipe.toString());
+                    //Timber.i("Recipe Passed in: %s", theRecipe.toString());
                }
           } catch (Exception e) {
                e.printStackTrace();
@@ -117,7 +117,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      }
 
      private void setWidget(ArrayList<Ingredient> ingredientsToPassToWidget) {
-          WidgetRecipeService.startWidgetService(getContext(), ingredientsToPassToWidget);
+          WidgetRecipeService.startWidgetService(getContext(), ingredientsToPassToWidget, theRecipe.getName());
           Toast.makeText(getActivity(), "Widget Updated!", Toast.LENGTH_LONG).show();
      }
 

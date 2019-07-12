@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-
     android:tag="landscape_recipe_list_layout"
+    android:weightSum="5"
 
     tools:context=".RecipeListActivity">
 
-    <LinearLayout
-        android:weightSum="5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
+    <FrameLayout
+        android:id="@+id/landscape_recipe_list_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@color/blue"
 
-        android:orientation="horizontal">
+        android:layout_weight="2" />
 
-        <FrameLayout
-            android:id="@+id/landscape_recipe_list_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5" />
-
-        <FrameLayout
-            android:id="@+id/landscape_recipe_detail_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0" />
-    </LinearLayout>
-</ScrollView>
+    <FrameLayout
+        android:background="@android:color/holo_red_light"
+        android:id="@+id/landscape_recipe_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3" />
+</LinearLayout>

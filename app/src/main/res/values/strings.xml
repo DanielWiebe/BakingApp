@@ -24,4 +24,5 @@
     <string name="apple_pie">Apple Pie</string>
     <string name="recipe_list">Recipe List</string>
     <string name="send_to_widget">Send To Widget</string>
+    <string name="select_a_recipe">Select a Recipe!</string>
 </resources>

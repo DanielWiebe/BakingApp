@@ -68,6 +68,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      Handler mainHandle;
      // private OnFragmentInteractionListener mListener;
      String videoURL;
+     String thumbnailURL;
      @BindView(R.id.cardview)
      CardView cardView;
      private int currentWindow;
@@ -141,9 +142,10 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           Timber.d("Current index is %s", selectedIndex);
 
           videoURL = thePassedInStep.getVideoURL();
+          thumbnailURL = thePassedInStep.getThumbURL();
 
 
-          if (!videoURL.isEmpty()) {
+          if (!videoURL.isEmpty() || !thumbnailURL.isEmpty()) {
                initializePlayer();
           } else {
                player = null;
@@ -184,21 +186,37 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
 
      //make the sources
      private void initializePlayer() {
-          Uri uri = Uri.parse(videoURL);
+          Uri videoSource;
+          Uri imageSource;
+
+
           if (player == null) {
+               MediaSource mediaSource = null;
                player = ExoPlayerFactory.newSimpleInstance(
                        new DefaultRenderersFactory(getActivity()),
                        new DefaultTrackSelector(), new DefaultLoadControl());
                simpleExoPlayerView.setPlayer(player);
                player.setPlayWhenReady(playWhenReady);
                player.seekTo(currentWindow, playbackPosition);
-               MediaSource mediaSource = buildMediaSource(uri);
+
+               if (!videoURL.isEmpty()) {
+                    videoSource = Uri.parse(videoURL);
+                    mediaSource = buildMediaSource(videoSource);
+               } else if (thumbnailURL.endsWith(".mp4")) {
+                    imageSource = Uri.parse(thumbnailURL);
+                    mediaSource = buildMediaSource(imageSource);
+
+               } else if (thumbnailURL.isEmpty()) {
+                    simpleExoPlayerView.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.exo_icon_stop));
+               }
+
 
                simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
                player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
                player.prepare(mediaSource, true, false);
                player.setPlayWhenReady(true);
           }
+
      }
 
 
@@ -246,6 +264,12 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           currentState.putParcelable(SELECTED_STEPS, Parcels.wrap(thePassedInStep));
           currentState.putInt(SELECTED_INDEX, selectedIndex);
           currentState.putString("Title", currentName);
+          currentState.putLong("player_pos", playbackPosition);
+          currentState.putBoolean("state", playWhenReady);
+
+          //  currentState.putLong(PLAYER_CURRENT_POS_KEY, Math.max(0, mPlayer.getCurrentPosition()));
+          //currentState.putBoolean(PLAYER_IS_READY_KEY, mPlayer.getPlayWhenReady());
+
      }
 
      @Override
