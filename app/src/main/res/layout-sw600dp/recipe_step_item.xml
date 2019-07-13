@@ -9,36 +9,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:weightSum="10">
+        android:weightSum="10"
+        android:padding="16dp">
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/tv_step_item_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:layout_weight="1"
             android:text="@string/_1" />
 
         <TextView
             android:id="@+id/tv_step_item_short_desc"
             android:layout_width="0dp"
+            android:layout_weight="6"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:layout_weight="6"
-            android:ellipsize="end"
             android:maxLines="1"
             android:paddingTop="30dp"
-
             android:paddingBottom="30dp"
+
+            android:ellipsize="end"
+            android:textSize="25sp"
             android:text="@string/apple_pie" />
 
         <ImageView
             android:id="@+id/iv_step_item_thumb"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:layout_weight="3"
-            android:src="@drawable/image_placeholder" />
+            android:src="@drawable/image_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,10 +17,10 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -96,6 +95,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      @Override
      public void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
+
      }
 
      @Override
@@ -103,7 +103,21 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                               Bundle savedInstanceState) {
           View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
           // Inflate the layout for this fragment
-          setRetainInstance(true);
+          try {
+               Bundle bundle = this.getArguments();
+               if (bundle != null) {
+
+                    thePassedInStep = Parcels.unwrap(bundle.getParcelable("step"));
+                    selectedIndex = bundle.getInt(SELECTED_INDEX);
+
+
+                    Timber.d("on create. Bundle is not null the step is received in fragment with step id of %s and selected index received is %s", thePassedInStep.getId(), selectedIndex);
+
+               }
+          } catch (Exception e) {
+               Timber.w("Empty Bundle: %s", e.getMessage());
+          }
+          //setRetainInstance(true);
           mainHandle = new Handler();
           meter = new DefaultBandwidthMeter();
 
@@ -111,20 +125,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           //mListener = (RecipeDetailActivity) getActivity();
           unbinder = ButterKnife.bind(this, rootView);
 
-          try {
-               Bundle bundle = this.getArguments();
-               if (bundle != null) {
-                    nameTV.setText("Step Info");
-                    thePassedInStep = Parcels.unwrap(bundle.getParcelable("step"));
-                    selectedIndex = bundle.getInt(SELECTED_INDEX);
-                    descTV.setText(thePassedInStep.getDesc());
 
-                    Timber.d("Bundle is not null so the step is received in the instantiated fragment with id of %s", thePassedInStep.getId());
-
-               }
-          } catch (Exception e) {
-               Timber.w("Empty Bundle: %s", e.getMessage());
-          }
           return rootView;
      }
 
@@ -132,14 +133,14 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
           super.onViewCreated(view, savedInstanceState);
           setUpPlayer();
-
+          descTV.setText(thePassedInStep.getDesc());
 
      }
 
      private void setUpPlayer() {
           simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
-          Timber.d("Current index is %s", selectedIndex);
+          Timber.d("setting up player. Current index is %s", selectedIndex);
 
           videoURL = thePassedInStep.getVideoURL();
           thumbnailURL = thePassedInStep.getThumbURL();
@@ -166,20 +167,20 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                cardView.setVisibility(View.GONE);
                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
-               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-               params.width = params.MATCH_PARENT;
-               params.height = params.MATCH_PARENT;
-               simpleExoPlayerView.setLayoutParams(params);
+//               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+//               params.width = params.MATCH_PARENT;
+//               params.height = params.MATCH_PARENT;
+//               simpleExoPlayerView.setLayoutParams(params);
           } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
                //unhide your objects here.
                cardView.setVisibility(View.VISIBLE);
 
 
                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-               params.width = params.MATCH_PARENT;
-               params.height = 600;
-               simpleExoPlayerView.setLayoutParams(params);
+//               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+//               params.width = params.MATCH_PARENT;
+//               params.height = 600;
+//               simpleExoPlayerView.setLayoutParams(params);
           }
 
      }
@@ -210,9 +211,33 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                player.prepare(mediaSource, true, false);
                player.seekTo(currentWindow, playbackPosition);
                simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-               player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+               //player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
 
-               player.setPlayWhenReady(true);
+               player.addListener(new Player.DefaultEventListener() {
+                    @Override
+                    public void onPlayerStateChanged(boolean play, int playbackState) {
+                         if (play && playbackState == Player.STATE_READY) {
+                              playWhenReady = play;
+                              Timber.w("Player is playing. play when ready %s", playWhenReady);
+                              player.setPlayWhenReady(playWhenReady);
+                              // media actually playing
+                         } else if (play) {
+                              Timber.w("Player idling or buffering or ended play when ready %s", playWhenReady);
+                              // might be idle (plays after prepare()),
+                              // buffering (plays when data available)
+                              // or ended (plays when seek away from end)
+                              playWhenReady = play;
+                              // player.setPlayWhenReady(playWhenReady);
+                         } else {
+                              playWhenReady = play;
+                              Timber.w("Paused. play when ready %s", playWhenReady);
+                              //player.setPlayWhenReady(playWhenReady);
+                              // player paused in any state
+                         }
+                    }
+               });
+
+               player.setPlayWhenReady(playWhenReady);
           }
 
      }
@@ -261,6 +286,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           super.onSaveInstanceState(currentState);
           currentState.putParcelable(THE_STEPS, Parcels.wrap(thePassedInStep));
           currentState.putInt(SELECTED_INDEX, selectedIndex);
+          Timber.w("putting selected index into outstate %s", selectedIndex);
           currentState.putString("Title", currentName);
           currentState.putLong("player_pos", playbackPosition);
           currentState.putBoolean("state", playWhenReady);
@@ -269,6 +295,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
           //currentState.putBoolean(PLAYER_IS_READY_KEY, mPlayer.getPlayWhenReady());
 
      }
+
 
      @Override
      public void onDetach() {
@@ -295,9 +322,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      @Override
      public void onPause() {
           super.onPause();
-          if (Util.SDK_INT <= 23) {
-               releasePlayer();
-          }
+          releasePlayer();
      }
 
      @Override
@@ -321,7 +346,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      public void onPauseFragment() {
           Timber.d("Fragment paused..");
           if (player != null) {
-               player.setPlayWhenReady(false);
+               player.setPlayWhenReady(playWhenReady);
                releasePlayer();
           }
      }
@@ -329,6 +354,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      @Override
      public void onResumeFragment() {
           if (player == null) {
+               player.setPlayWhenReady(playWhenReady);
                initializePlayer();
           }
 

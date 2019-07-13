@@ -1,7 +1,6 @@
 package com.shiftdev.masterchef;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -49,7 +48,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
      TextView emptyTV;
      @Nullable
      private BasicIdlingResource mIdlingResource;
-     private boolean mTwoPane;
+     private boolean isTablet;
      private RecipeAdapter rAdapter;
 
      @VisibleForTesting
@@ -65,11 +64,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
      protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
           setContentView(R.layout.activity_recipe_list);
-          Timber.plant(new Timber.DebugTree());
+          if (BuildConfig.DEBUG) {
+
+               Timber.plant(new Timber.DebugTree());
+          }
           Timber.d("RecipeListActivity created");
-          if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-               mTwoPane = true;
-          else mTwoPane = false;
+          isTablet = getResources().getBoolean(R.bool.isTablet);
 
           unbinder = ButterKnife.bind(this);
           getIdlingResource();
@@ -78,7 +78,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
           }
           setUpAdapterAndRecycler();
 
-          Timber.w("%s %s", getString(R.string.landscape_is), mTwoPane);
      }
 
      private void setUpAdapterAndRecycler() {
@@ -132,22 +131,25 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
      @Override
      public void onSaveInstanceState(Bundle outState) {
           super.onSaveInstanceState(outState);
+
      }
 
      @Override
      public void methodForHandlingRecipeClicks(Recipe position) {
+          setTitle(position.getName());
 
 
-          if (mTwoPane) {
+//tablet mode populates empty detail container with fragment
+          if (isTablet) {
                emptyTV.setVisibility(View.GONE);
                RecipeDetailFragment fragment = new RecipeDetailFragment().newInstance(position);
                FragmentManager fragmentManager = getSupportFragmentManager();
                fragmentManager.beginTransaction()
-                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null)
+                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack("detailFragment")
                        .commit();
           } else {
-
-               Timber.i("Recipe Clicked in the Recipe list with id of %s", position.getId());
+// since it's on a phone, go right to detail activity
+               Timber.i("we're in phone mode, just going to detail activity. Recipe Clicked in the Recipe list with id of %s", position.getId());
 
                Bundle selectedRecipeBundle = new Bundle();
                selectedRecipeBundle.putParcelable("Selected Recipe", Parcels.wrap(position));

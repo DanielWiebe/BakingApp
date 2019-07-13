@@ -10,6 +10,8 @@ import com.shiftdev.masterchef.Models.Recipe;
 
 import org.parceler.Parcels;
 
+import timber.log.Timber;
+
 public class RecipeDetailActivity extends AppCompatActivity {
      public static String SELECTED_RECIPES = "Selected_Recipes";
      public static String THE_STEPS = "Selected_Steps";
@@ -18,7 +20,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
      public static String STACK_RECIPE_STEP_DETAIL = "STACK_RECIPE_STEP_DETAIL";
      Recipe theRecipe;
      String name;
-
+     private boolean isTablet;
+     RecipeDetailFragment fragment;
 
      @Override
      protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +34,35 @@ public class RecipeDetailActivity extends AppCompatActivity {
                theRecipe = Parcels.unwrap(arguments.getParcelable("selected_Recipe"));
                name = theRecipe.getName();
                setTitle(name);
-               RecipeDetailFragment fragment = new RecipeDetailFragment().newInstance(theRecipe);
-               FragmentManager fragmentManager = getSupportFragmentManager();
-               fragmentManager.beginTransaction()
-                       .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null)
-                       .commit();
+
           } else {
+               //fragment = getSupportFragmentManager().getFragment(savedInstanceState, "detailFragment");
                name = savedInstanceState.getString("Title");
                setTitle(name);
 
           }
+          isTablet = getResources().getBoolean(R.bool.isTablet);
+          if (isTablet) {
+               Timber.w("tablet layout detected");
+               setUpFragmentInContainer();
+               //}else {
+               //  Intent intent   = new Intent(this, RecipeStepDetailActivity.class);
+               //intent.putExtra("selected_recipe", Parcels.wrap(theRecipe));
+
+          } else {
+               Timber.w("phone mode, set up fragment in container");
+               setUpFragmentInContainer();
+          }
+
+
+     }
+
+     private void setUpFragmentInContainer() {
+          RecipeDetailFragment fragment = new RecipeDetailFragment().newInstance(theRecipe);
+          FragmentManager fragmentManager = getSupportFragmentManager();
+          fragmentManager.beginTransaction()
+                  .replace(R.id.recipe_fragment_detail_container, fragment).addToBackStack(null)
+                  .commit();
      }
 
 
@@ -48,6 +70,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
      public void onSaveInstanceState(Bundle outState) {
           super.onSaveInstanceState(outState);
           outState.putString("Title", name);
+          // getSupportFragmentManager().putFragment(outState, "detailFragment", frag);
      }
 
 

@@ -1,8 +1,12 @@
 package com.shiftdev.masterchef;
 
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,6 +44,18 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
           Step step = stepArrayList.get(position);
           holder.tvNumber.setText(Integer.toString(step.getId()));
           holder.tvShortDesc.setText(step.getShortDesc());
+          String thumbURL = stepArrayList.get(position).getThumbURL();
+
+          //if the thumbnail has data that ends with .mp4 in it, display the thumbnail from the thumbnail source field
+          if (!thumbURL.isEmpty() && thumbURL.endsWith(".mp4")) {
+               Bitmap bMap = ThumbnailUtils.createVideoThumbnail(thumbURL, MediaStore.Video.Thumbnails.MINI_KIND);
+               //Picasso.get().load(bMap).into(holder.ivThumb);
+               holder.ivThumb.setImageBitmap(bMap);
+
+               //if thumb is empty, and vid is not, then just throw up the default photo placeholder
+          } else if (thumbURL.isEmpty() && !stepArrayList.get(position).getVideoURL().isEmpty()) {
+               holder.ivThumb.setImageResource(R.drawable.image_placeholder);
+          }
 
      }
 
@@ -59,6 +75,8 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
 
           @BindView(R.id.tv_step_item_number)
           TextView tvNumber;
+          @BindView(R.id.iv_step_item_thumb)
+          ImageView ivThumb;
 
 
           public RecyclerViewHolder(View itemView) {

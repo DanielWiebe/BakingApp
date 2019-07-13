@@ -4,7 +4,7 @@
     <string name="title_recipe_detail">Recipe Details</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="step_info">Step Info</string>
     <string name="landscape_is">landscape is</string>
     <string name="nutella_pie">Nutella Pie</string>
     <string name="serves_8_people">Serves 8 people</string>
@@ -25,4 +25,5 @@
     <string name="recipe_list">Recipe List</string>
     <string name="send_to_widget">Send To Widget</string>
     <string name="select_a_recipe">Select a Recipe!</string>
+
 </resources>

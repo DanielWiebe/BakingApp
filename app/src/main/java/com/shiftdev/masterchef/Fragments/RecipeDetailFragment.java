@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +24,7 @@ import com.shiftdev.masterchef.RecipeListActivity;
 import com.shiftdev.masterchef.RecipeStepDetailActivity;
 import com.shiftdev.masterchef.WidgetRecipeService;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      Recipe theRecipe;
      RecipeDetailAdapter mRecipeDetailAdapter;
      ArrayList<Step> steps;
+     private ArrayList<Ingredient> ingredients;
 
      /**
       * Mandatory empty constructor for the fragment manager to instantiate the
@@ -81,6 +84,16 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      }
 
      @Override
+     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+          super.onViewStateRestored(savedInstanceState);
+          if (savedInstanceState != null) {
+               theRecipe = Parcels.unwrap(savedInstanceState.getParcelable("selected_Recipe"));
+               ingredients = theRecipe.getIngredient();
+               steps = theRecipe.getStep();
+          }
+     }
+
+     @Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
 
@@ -93,12 +106,32 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
                if (bundle != null) {
                     theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
                     //Timber.i("Recipe Passed in: %s", theRecipe.toString());
+
+                    ingredients = theRecipe.getIngredient();
+                    steps = theRecipe.getStep();
+                    ArrayList<Ingredient> ingredientsToPassToWidget = getAndMakeIngredientsList();
+                    setWidgetBT.setOnClickListener(view -> setWidget(ingredientsToPassToWidget));
                }
           } catch (Exception e) {
                e.printStackTrace();
           }
-          ArrayList<Ingredient> ingredients = theRecipe.getIngredient();
-          steps = theRecipe.getStep();
+
+
+          setUpRecyclerViewAndAdapter();
+
+
+          return rootView;
+     }
+
+     private void setUpRecyclerViewAndAdapter() {
+          LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+          stepsRV.setLayoutManager(mLayoutManager);
+          mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
+          stepsRV.setAdapter(mRecipeDetailAdapter);
+     }
+
+     @NotNull
+     private ArrayList<Ingredient> getAndMakeIngredientsList() {
           ArrayList<Ingredient> ingredientsToPassToWidget = new ArrayList<>();
           for (int i = 0; i < ingredients.size(); i++) {
                ingredientTV.append("\u2022 " + ingredients.get(i).getIngredient() + "\n");
@@ -106,14 +139,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
                ingredientTV.append("\t\t\t Measure: " + ingredients.get(i).getUnit_of_measurement() + "\n\n");
                ingredientsToPassToWidget.add(ingredients.get(i));
           }
-          LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-          stepsRV.setLayoutManager(mLayoutManager);
-          mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
-          stepsRV.setAdapter(mRecipeDetailAdapter);
-
-          setWidgetBT.setOnClickListener(view -> setWidget(ingredientsToPassToWidget));
-
-          return rootView;
+          return ingredientsToPassToWidget;
      }
 
      private void setWidget(ArrayList<Ingredient> ingredientsToPassToWidget) {
@@ -121,6 +147,13 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           Toast.makeText(getActivity(), "Widget Updated!", Toast.LENGTH_LONG).show();
      }
 
+
+     @Override
+     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+          super.onActivityCreated(savedInstanceState);
+          theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
+
+     }
 
      @Override
      public void onSaveInstanceState(Bundle currentState) {
@@ -132,13 +165,13 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      //passed in data from the adapter interface about the step that is clicked.
      @Override
      public void onAdapterStepItemClick(ArrayList<Step> theSteps, int currentIndex, String theRecipeName) {
-          Timber.d("onAdapter Item clicked, Recipe Clicked %s, ID of step is %s", theRecipeName, theSteps.get(currentIndex).getId());
+          Timber.w("onAdapter Item clicked, Recipe Clicked %s, ID of step is %s and current index that we will pass to step detail is %s", theRecipeName, theSteps.get(currentIndex).getId(), currentIndex);
           Bundle stepBundle = new Bundle();
           stepBundle.putInt(SELECTED_INDEX, currentIndex);
           final Intent intent = new Intent(getActivity(), RecipeStepDetailActivity.class);
           intent.putExtra("title", theRecipeName);
           intent.putExtra(THE_STEPS, Parcels.wrap(theSteps));
-          intent.putExtra("start_index", currentIndex);
+          intent.putExtra("Selected_Index", currentIndex);
           startActivity(intent);
      }
 
@@ -148,6 +181,10 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           unbinder.unbind();
      }
 
+     @Override
+     public void onStop() {
+          super.onStop();
 
+     }
 }
 

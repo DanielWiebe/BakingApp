@@ -7,11 +7,13 @@
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:orientation="horizontal"
+    android:weightSum="5"
     tools:context="com.shiftdev.masterchef.RecipeListActivity">
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:background="@color/design_default_color_primary_dark"
         android:orientation="vertical">
 
@@ -28,31 +30,26 @@
         </FrameLayout>
     </ScrollView>
 
-    <!--<ScrollView-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="8dp"-->
-    <!--android:layout_weight="3">-->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_weight="3">
 
-    <!--<FrameLayout-->
-    <!--android:id="@+id/recipe_fragment_detail_container"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content">-->
+        <FrameLayout
+            android:id="@+id/recipe_fragment_detail_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <!--<include-->
-    <!--layout="@layout/empty_pane_view"-->
-    <!--android:id="@+id/emptyPaneView"-->
-    <!--android:visibility="visible" />-->
-
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:text="@string/select_a_recipe"-->
-    <!--android:textAlignment="center"-->
-    <!--android:textAppearance="@style/TextAppearance.AppCompat.Title"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:visibility="visible"-->
-    <!--android:id="@+id/empty_text" />-->
-    <!--</FrameLayout>-->
-    <!--</ScrollView>-->
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/select_a_recipe"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:visibility="visible" />
+        </FrameLayout>
+    </ScrollView>
 </LinearLayout>

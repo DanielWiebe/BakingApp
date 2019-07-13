@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
 
 
-                android:text="@string/hello_blank_fragment" />
+                android:text="@string/step_info" />
 
 
             <TextView

@@ -5,17 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:tag="sw600dp-land-recipe_step_detail"
     android:weightSum="100"
     tools:context=".RecipeStepDetailActivity">
 
 
     <FrameLayout
-        android:id="@+id/recipe_step_detail_step_container"
+        android:id="@+id/tablet_size_recipe_step_detail_step_container"
         android:layout_width="0dp"
-
         android:layout_height="match_parent"
         android:layout_weight="30"
-        android:background="@color/primary_light">
+        android:background="@color/primary_light"
+        android:tag="tablet-land">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_step_detail"
@@ -33,7 +34,6 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <include layout="@layout/fragment_step_detail" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"
