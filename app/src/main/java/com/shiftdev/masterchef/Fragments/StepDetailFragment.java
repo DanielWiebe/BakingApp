@@ -35,6 +35,7 @@ import com.shiftdev.masterchef.Models.Step;
 import com.shiftdev.masterchef.R;
 import com.shiftdev.masterchef.RecipeStepDetailActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import butterknife.BindView;
@@ -47,29 +48,22 @@ import static com.shiftdev.masterchef.RecipeDetailActivity.THE_STEPS;
 
 
 public class StepDetailFragment extends Fragment implements RecipeStepDetailActivity.FragmentLifecycle {
-     Unbinder unbinder;
      @BindView(R.id.tv_step_detail_name)
      TextView nameTV;
-
      @BindView(R.id.tv_step_detail_description)
      TextView descTV;
-
      @BindView(R.id.playerView)
      PlayerView simpleExoPlayerView;
-
-     SimpleExoPlayer player;
-     // ArrayList<Step> steps;
-     Step thePassedInStep;
-     int selectedIndex;
-     BandwidthMeter meter;
      String currentName;
-
-     Handler mainHandle;
-     // private OnFragmentInteractionListener mListener;
-     String videoURL;
-     String thumbnailURL;
      @BindView(R.id.cardview)
      CardView cardView;
+     private Unbinder unbinder;
+     private SimpleExoPlayer player;
+     private Step thePassedInStep;
+     private int selectedIndex;
+     private BandwidthMeter meter;
+     private String videoURL;
+     private String thumbnailURL;
      private int currentWindow;
      private long playbackPosition;
      private boolean playWhenReady;
@@ -99,7 +93,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      }
 
      @Override
-     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
           View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
           // Inflate the layout for this fragment
@@ -118,7 +112,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                Timber.w("Empty Bundle: %s", e.getMessage());
           }
           //setRetainInstance(true);
-          mainHandle = new Handler();
+          Handler mainHandle = new Handler();
           meter = new DefaultBandwidthMeter();
 
 
@@ -163,24 +157,11 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
 
           // Checking the orientation of the screen
           if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-               //First Hide other objects (listview or recyclerview), better hide them using Gone.
                cardView.setVisibility(View.GONE);
                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
-//               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-//               params.width = params.MATCH_PARENT;
-//               params.height = params.MATCH_PARENT;
-//               simpleExoPlayerView.setLayoutParams(params);
           } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-               //unhide your objects here.
                cardView.setVisibility(View.VISIBLE);
-
-
                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-//               params.width = params.MATCH_PARENT;
-//               params.height = 600;
-//               simpleExoPlayerView.setLayoutParams(params);
           }
 
      }
@@ -211,7 +192,6 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
                player.prepare(mediaSource, true, false);
                player.seekTo(currentWindow, playbackPosition);
                simpleExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-               //player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
 
                player.addListener(new Player.DefaultEventListener() {
                     @Override
@@ -250,7 +230,7 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      }
 
      //release resources
-     public void releasePlayer() {
+     private void releasePlayer() {
           if (player != null) {
                playbackPosition = player.getCurrentPosition();
                currentWindow = player.getCurrentWindowIndex();
@@ -273,16 +253,10 @@ public class StepDetailFragment extends Fragment implements RecipeStepDetailActi
      @Override
      public void onAttach(Context context) {
           super.onAttach(context);
-//          if (context instanceof OnFragmentInteractionListener) {
-//               mListener = (OnFragmentInteractionListener) context;
-//          } else {
-//               throw new RuntimeException(context.toString()
-//                       + " must implement OnFragmentInteractionListener");
-//          }
      }
 
      @Override
-     public void onSaveInstanceState(Bundle currentState) {
+     public void onSaveInstanceState(@NotNull Bundle currentState) {
           super.onSaveInstanceState(currentState);
           currentState.putParcelable(THE_STEPS, Parcels.wrap(thePassedInStep));
           currentState.putInt(SELECTED_INDEX, selectedIndex);

@@ -18,35 +18,16 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-
-/**
- * this tests a user clicking an item in the launcher activity recipe list activity and verifying that the recipe fragment detail container view is displayed on the next screen.
- */
-
-
 @RunWith(AndroidJUnit4ClassRunner.class)
-public class RecipeListActivityBasicTest {
+public class DetailActivityStepClickTest {
 
      @Rule
-     public ActivityTestRule<RecipeListActivity> mActivityTestRule = new ActivityTestRule<>(RecipeListActivity.class);
+     public ActivityTestRule<RecipeDetailActivity> mActivityTestRule = new ActivityTestRule<>(RecipeDetailActivity.class);
      private IdlingResource mIdlingResource;
 
      @Before
      public void registerIdlingResource() {
           mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
-          // Espresso.registerIdlingResources(mIdlingResource);
-     }
-
-
-     @Test
-     public void clickRecipeListRecyclerViewItem_ThatOpensDetailActivity() throws InterruptedException {
-          //onView(withId(R.id.)).check(matches(isDisplayed()));
-          Thread.sleep(1000);
-          onView(withId(R.id.rv_home_recipe_list))
-                  .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
-          onView(withId(R.id.recipe_fragment_detail_container)).check(matches(isDisplayed()));
-
      }
 
      @Test
@@ -54,11 +35,16 @@ public class RecipeListActivityBasicTest {
           Thread.sleep(1000);
           onView(withId(R.id.rv_home_recipe_list))
                   .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-          onView(withId(R.id.recipe_fragment_detail_container)).check(matches(isDisplayed()));
-          onView(withId(R.id.rv_recipe_detail)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-          onView(withId(R.id.rv_step_detail)).check(matches(isDisplayed()));
-     }
 
+          onView(withId(R.id.recipe_fragment_detail_container)).check(matches(isDisplayed()));
+
+
+          onView(withId(R.id.rv_recipe_detail)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+          onView(withId(R.id.rv_step_detail)).check(matches(isDisplayed()));
+
+
+     }
 
      @After
      public void unregisterIdlingResource() {

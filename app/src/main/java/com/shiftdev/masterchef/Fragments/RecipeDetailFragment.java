@@ -45,7 +45,6 @@ import static com.shiftdev.masterchef.RecipeDetailActivity.THE_STEPS;
  */
 public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapter.DetailStepItemClickListener {
 
-     Unbinder unbinder;
      //OnRecipeClickListener mCallback;
      @BindView(R.id.tv_recipe_detail_text)
      TextView ingredientTV;
@@ -53,9 +52,9 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      RecyclerView stepsRV;
      @BindView(R.id.bt_apply_widget)
      Button setWidgetBT;
-     Recipe theRecipe;
-     RecipeDetailAdapter mRecipeDetailAdapter;
-     ArrayList<Step> steps;
+     private ArrayList<Step> steps;
+     private Unbinder unbinder;
+     private Recipe theRecipe;
      private ArrayList<Ingredient> ingredients;
 
      /**
@@ -88,13 +87,14 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
           super.onViewStateRestored(savedInstanceState);
           if (savedInstanceState != null) {
                theRecipe = Parcels.unwrap(savedInstanceState.getParcelable("selected_Recipe"));
+               assert theRecipe != null;
                ingredients = theRecipe.getIngredient();
                steps = theRecipe.getStep();
           }
      }
 
      @Override
-     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
 
 
@@ -107,6 +107,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
                     theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
                     //Timber.i("Recipe Passed in: %s", theRecipe.toString());
 
+                    assert theRecipe != null;
                     ingredients = theRecipe.getIngredient();
                     steps = theRecipe.getStep();
                     ArrayList<Ingredient> ingredientsToPassToWidget = getAndMakeIngredientsList();
@@ -126,7 +127,7 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      private void setUpRecyclerViewAndAdapter() {
           LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
           stepsRV.setLayoutManager(mLayoutManager);
-          mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
+          RecipeDetailAdapter mRecipeDetailAdapter = new RecipeDetailAdapter(steps, this, theRecipe.getName());
           stepsRV.setAdapter(mRecipeDetailAdapter);
      }
 
@@ -151,12 +152,13 @@ public class RecipeDetailFragment extends Fragment implements RecipeDetailAdapte
      @Override
      public void onActivityCreated(@Nullable Bundle savedInstanceState) {
           super.onActivityCreated(savedInstanceState);
+          assert getArguments() != null;
           theRecipe = Parcels.unwrap(getArguments().getParcelable("selected_Recipe"));
 
      }
 
      @Override
-     public void onSaveInstanceState(Bundle currentState) {
+     public void onSaveInstanceState(@NotNull Bundle currentState) {
           super.onSaveInstanceState(currentState);
           currentState.putParcelable("selected_Recipe", Parcels.wrap(theRecipe));
           currentState.putString("Title", theRecipe.getName());

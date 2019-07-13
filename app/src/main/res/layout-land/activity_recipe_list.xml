@@ -27,32 +27,4 @@
                 tools:listitem="@layout/recipe_list_item" />
         </FrameLayout>
     </ScrollView>
-
-    <!--<ScrollView-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="8dp"-->
-    <!--android:layout_weight="3">-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/recipe_fragment_detail_container"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<include-->
-    <!--layout="@layout/empty_pane_view"-->
-    <!--android:id="@+id/emptyPaneView"-->
-    <!--android:visibility="visible" />-->
-
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:text="@string/select_a_recipe"-->
-    <!--android:textAlignment="center"-->
-    <!--android:textAppearance="@style/TextAppearance.AppCompat.Title"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:visibility="visible"-->
-    <!--android:id="@+id/empty_text" />-->
-    <!--</FrameLayout>-->
-    <!--</ScrollView>-->
 </LinearLayout>

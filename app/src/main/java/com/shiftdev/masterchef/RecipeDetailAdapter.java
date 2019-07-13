@@ -1,5 +1,6 @@
 package com.shiftdev.masterchef;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
@@ -22,8 +23,8 @@ import timber.log.Timber;
 
 public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapter.RecyclerViewHolder> {
      final private DetailStepItemClickListener detailStepItemClickListener;
-     ArrayList<Step> stepArrayList;
-     String recipeName;
+     private ArrayList<Step> stepArrayList;
+     private String recipeName;
 
      public RecipeDetailAdapter(ArrayList<Step> stepsIn, DetailStepItemClickListener listener, String name) {
           stepArrayList = stepsIn;
@@ -39,6 +40,7 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
           return new RecyclerViewHolder(view);
      }
 
+     @SuppressLint("SetTextI18n")
      @Override
      public void onBindViewHolder(@NonNull RecipeDetailAdapter.RecyclerViewHolder holder, int position) {
           Step step = stepArrayList.get(position);
@@ -79,7 +81,7 @@ public class RecipeDetailAdapter extends RecyclerView.Adapter<RecipeDetailAdapte
           ImageView ivThumb;
 
 
-          public RecyclerViewHolder(View itemView) {
+          RecyclerViewHolder(View itemView) {
                super(itemView);
                ButterKnife.bind(this, itemView);
                itemView.setOnClickListener(this);

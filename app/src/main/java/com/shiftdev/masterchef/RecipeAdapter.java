@@ -1,7 +1,6 @@
 package com.shiftdev.masterchef;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,27 +23,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
 
      final private listenerForRecipeClicks onRecipeClickListener;
-     private Context context;
      private List<Recipe> recipes;
-     private boolean mTwoPane;
 
      public RecipeAdapter(List<Recipe> recipeList, listenerForRecipeClicks listener) {
 
-          //this.context = context;
           recipes = recipeList;
-          //  mTwoPane = isLandscape;
           this.onRecipeClickListener = listener;
-          //Timber.d("recipes received in the constructor of Recipe Adapter and the first recipe is: %s", recipes.get(0));
      }
 
-     public void setRecipeInfo(List<Recipe> recipesPassedIn, Context passedContext) {
-          if (recipes != null) {
-               Timber.d("recipes received in the set Recipe info of Recipe Adapter and the first recipe is: %s", recipesPassedIn.get(0));
-               context = passedContext;
-               recipes = recipesPassedIn;
-               notifyDataSetChanged();
-          }
-     }
 
      @NonNull
      @Override
@@ -91,7 +77,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
           @BindView(R.id.tv_recipe_item_stepCount)
           TextView stepCount;
 
-          public RecipeViewHolder(View itemView) {
+          RecipeViewHolder(View itemView) {
 
                super(itemView);
                //Timber.d("recipeViewHolder called, assigning the click listener and binding Butterknife views to the itemview");

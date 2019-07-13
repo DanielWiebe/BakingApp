@@ -2,10 +2,15 @@ package com.shiftdev.masterchef;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.test.espresso.IdlingResource;
 
 import com.shiftdev.masterchef.Fragments.RecipeDetailFragment;
+import com.shiftdev.masterchef.IdlingResource.BasicIdlingResource;
 import com.shiftdev.masterchef.Models.Recipe;
 
 import org.parceler.Parcels;
@@ -20,8 +25,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
      public static String STACK_RECIPE_STEP_DETAIL = "STACK_RECIPE_STEP_DETAIL";
      Recipe theRecipe;
      String name;
-     private boolean isTablet;
      RecipeDetailFragment fragment;
+     private boolean isTablet;
+     @Nullable
+     private BasicIdlingResource mIdlingResource;
+
+     @VisibleForTesting
+     @NonNull
+     public IdlingResource getIdlingResource() {
+          if (mIdlingResource == null) {
+               mIdlingResource = new BasicIdlingResource();
+          }
+          return mIdlingResource;
+     }
+
 
      @Override
      protected void onCreate(Bundle savedInstanceState) {

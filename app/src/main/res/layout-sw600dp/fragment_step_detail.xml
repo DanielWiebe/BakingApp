@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_step_detail_name"
                 android:padding="8dp"
-                android:text="mix the steps together into the recipe for a delicious delight"
+                android:text="@string/test_text"
                 android:textSize="18sp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
